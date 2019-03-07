@@ -74,7 +74,7 @@ class _AuthPageState extends State<AuthPage> {
   }
 
 
-  // FIX THIS SHIT BIG BOI
+  // FIX THIS SHIT
   void _submitForm(Function login) {
     if (!_formKey.currentState.validate() || !_formData['accept']) {
       return;
