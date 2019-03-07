@@ -46,7 +46,7 @@ mixin EventModel on ConnectedModel {
 
   // UPDATE EVENT
   Future<bool> updateEvent(
-      String title, String description, String location) async {
+      String title, String description, String location, String eventID) async {
     final Map<String, dynamic> updateData = {
       'title': title,
       'description': description,
@@ -55,7 +55,10 @@ mixin EventModel on ConnectedModel {
       'hostID': _authenticatedUser.id,
     };
 
-    try {/*HTTP CODE*/} catch (error) {/*CATCH THE ERROR*/}
+    //UNFINISHED
+    try {
+      final http.Response response = await http.put('https://reach-app-1.firebaseio.com/events/${eventID}.json', body: json.encode(updateData));
+    } catch (error) {/*CATCH THE ERROR*/}
   }
 
   // DELETE EVENT
@@ -70,6 +73,8 @@ mixin EventModel on ConnectedModel {
   }
 }
 
+
+// Scoped model for the user sign in 
 mixin UserModel on ConnectedModel {
   void login(String email, String password) {
     _authenticatedUser = User(id: '0', email: email, password: password);

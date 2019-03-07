@@ -14,17 +14,35 @@ class _EventsPageState extends State<EventsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () {
-          setState(() {
-            _eventCount += 1;
-            events.add(_eventCount.toString());
-          });
-        },
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: () {
+            setState(() {
+              _eventCount += 1;
+              events.add(_eventCount.toString());
+            });
+          },
+        ),
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text('Events', style: TextStyle(fontWeight: FontWeight.bold)),
+          bottom: TabBar(
+            tabs: <Widget>[
+              Container(padding: EdgeInsets.all(15.0), child: Text('Going')),
+              Container(padding: EdgeInsets.all(15.0), child: Text('Hosting')),
+            ],
+          ),
+        ),
+        body: TabBarView(
+          children: <Widget>[
+            _buildEventsList(),
+            Center(child: Text('Hosting')),
+          ],
+        ),
       ),
-      body: _buildEventsList(),
     );
   }
 
