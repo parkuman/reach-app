@@ -79,4 +79,29 @@ mixin UserModel on ConnectedModel {
   void login(String email, String password) {
     _authenticatedUser = User(id: '0', email: email, password: password);
   }
+
+  Future<Map<String, dynamic>> signup(String email, String password) async {
+    final Map<String, dynamic> authData = {
+      'email': email,
+      'password': password,
+      'returnSecureToken': true,
+    };
+    final http.Response response = await http.post(
+      'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyDMI-orHMYBMmm1oKbbvMRRyZn_NlM8ie8',
+      body: json.encode(authData),
+      headers: {'Content-Type': 'application/json'},
+    );
+    final Map<String, dynamic> responseData = json.decode(response.body);
+    bool success = false;
+    String message;
+    if (responseData.containsKey('idToken')) {
+      success = true;
+      message = 'Authentication Succeded!';
+    } else if (responseData['error']['message'] == 'EMAIL_EXISTS') {
+      message = 'This email already exists';
+    } else {
+      message = 'Authentication Failed';
+    }
+    return {'success': success, 'message': message};
+  }
 }
