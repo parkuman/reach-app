@@ -25,6 +25,7 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    
 
     //instantiates a new model of type MainModel (one i created which combines a ton of models)
     final MainModel model = MainModel();
@@ -43,7 +44,7 @@ class _MyAppState extends State<MyApp> {
         routes: {
           // default page, this is going to be the first one to open in the app
           '/': (BuildContext context) => AuthPage(),
-          '/default': (BuildContext context) => DefaultPage(),
+          '/default': (BuildContext context) => DefaultPage(model),
           '/profile': (BuildContext context) => ProfilePage(),
           '/events': (BuildContext context) => EventsPage(),
           '/settings': (BuildContext context) => SettingsPage(),

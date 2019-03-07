@@ -73,15 +73,13 @@ class _AuthPageState extends State<AuthPage> {
     );
   }
 
-
-  // FIX THIS SHIT
   void _submitForm(Function login) {
     if (!_formKey.currentState.validate() || !_formData['accept']) {
       return;
     }
     _formKey.currentState.save();
     login(_formData['email'], _formData['password']);
-    Navigator.pushReplacementNamed(context, '/home');
+    Navigator.pushReplacementNamed(context, '/default');
   }
 
   @override

@@ -5,8 +5,13 @@ import './home.dart';
 import './profile.dart';
 import './events.dart';
 
+import '../scoped_models/main_model.dart';
+
 
 class DefaultPage extends StatefulWidget {
+  final MainModel model;
+  DefaultPage(this.model);
+  
   @override
   State<StatefulWidget> createState() {
     return _DefaultPageState();
@@ -14,6 +19,14 @@ class DefaultPage extends StatefulWidget {
 }
 
 class _DefaultPageState extends State<DefaultPage> {
+   
+   //to make new EVENTS BRO AS A TEST AHAHAHAHAHAHAH
+   void initState(){
+      widget.model.addEvent('1', '1', '1');
+      super.initState();
+    }
+
+
   int _selectedPage = 1;
   final _pageOptions = [
     EventsPage(),

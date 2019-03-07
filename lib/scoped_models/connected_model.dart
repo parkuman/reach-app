@@ -1,4 +1,6 @@
 import 'package:scoped_model/scoped_model.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 import '../models/event.dart';
 import '../models/user.dart';
@@ -20,7 +22,26 @@ mixin EventModel on ConnectedModel {
       'hostID': _authenticatedUser.id,
     };
 
-    try {/*HTTP CODE*/} catch (error) {/*CATCH THE ERROR*/}
+    try {
+      final http.Response response = await http.post(
+          'https://reach-app-1.firebaseio.com/events.json',
+          body: json.encode(eventData));
+      
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      final Event newEvent = Event(
+        id: responseData['name'],
+        title: title,
+        description: description,
+        hostEmail: _authenticatedUser.email,
+        hostID: _authenticatedUser.id,
+      );
+      _events.add(newEvent);
+      return true;
+
+    } catch (error) {
+      print('error with add card http request');
+      return false;
+    }
   }
 
   // UPDATE EVENT
