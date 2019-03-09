@@ -22,7 +22,7 @@ class _DefaultPageState extends State<DefaultPage> {
    
    //to make new EVENTS BRO AS A TEST AHAHAHAHAHAHAH
    void initState(){
-      widget.model.addEvent('1', '1', '1');
+      widget.model.addEvent('title', 'description', 'location');
       super.initState();
     }
 

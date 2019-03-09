@@ -22,18 +22,26 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  //instantiates a new model of type MainModel (one i created which combines a ton of models)
+    final MainModel _model = MainModel();
+
+
+  // Runs some code when the program starts
+  @override
+  initState() {
+    _model.autoAuthenticate();
+    super.initState();
+  }
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     
 
-    //instantiates a new model of type MainModel (one i created which combines a ton of models)
-    final MainModel model = MainModel();
-
     //the whole app is wrapped in the combined scoped model. Scoped model manages state of the app and helps update things
     return ScopedModel<MainModel>(
       //the model the entire app will use
-      model: model,
+      model: _model,
       //entire material app
       child: MaterialApp(
         title: 'Reach',
@@ -44,11 +52,12 @@ class _MyAppState extends State<MyApp> {
         routes: {
           // default page, this is going to be the first one to open in the app
           '/': (BuildContext context) => AuthPage(),
-          '/default': (BuildContext context) => DefaultPage(model),
+          '/default': (BuildContext context) => DefaultPage(_model),
           '/profile': (BuildContext context) => ProfilePage(),
           '/events': (BuildContext context) => EventsPage(),
           '/settings': (BuildContext context) => SettingsPage(),
         },
+        
       ),
     );
   }
