@@ -14,6 +14,7 @@ mixin ConnectedModel on Model {
   List<Event> _events = [];
   User _authenticatedUser;
   bool _isLoading = false;
+  String _selectedEventID;
 }
 
 mixin EventModel on ConnectedModel {
@@ -62,44 +63,132 @@ mixin EventModel on ConnectedModel {
 
   // UPDATE EVENT
   Future<bool> updateEvent(
-      String title, String description, String location, String eventID) async {
+      {String title, String description, String location, String id}) async {
     _isLoading = true;
     notifyListeners();
 
+    // finds the event we want to update using the id the user passed to the updateEvent method
+    final Event eventToUpdate = _events.firstWhere((Event event) {
+      return event.id == id;
+    });
+
+    //the data we want to send to the server with some updated info
     final Map<String, dynamic> updateData = {
       'title': title,
       'description': description,
       'location': location,
-      'hostEmail': _authenticatedUser.email,
-      'hostID': _authenticatedUser.id,
+      'hostEmail': eventToUpdate.hostEmail,
+      'hostID': eventToUpdate.hostID,
     };
 
-    //UNFINISHED
     try {
-      final http.Response response = await http.put(
-          'https://reach-app-1.firebaseio.com/events/${eventID}.json?auth=${_authenticatedUser.token}',
+      await http.put(
+          'https://reach-app-1.firebaseio.com/events/${eventToUpdate.id}.json?auth=${_authenticatedUser.token}',
           body: json.encode(updateData));
 
       _isLoading = false;
+
+      // the updated event, now with an id
+      final Event updatedEvent = Event(
+        id: eventToUpdate.id,
+        title: title,
+        description: description,
+        location: location,
+        hostEmail: eventToUpdate.hostEmail,
+        hostID: eventToUpdate.hostID,
+      );
+
+      // find the index in _events where the selected event dwells
+      final int eventToUpdateIndex = _events.indexWhere((Event event) {
+        return event.id == id;
+      });
+      // use the found dwelling index to change the selected event to the new updated one
+      _events[eventToUpdateIndex] = updatedEvent;
+
       notifyListeners();
+      return true;
     } catch (error) {
       _isLoading = false;
       notifyListeners();
 
-      print('error with add card http request');
+      print('error with update card http request');
       return false;
     }
   }
 
   // DELETE EVENT
-  Future<bool> deleteEvent() async {
-    //code that deletes the shit
-    try {/*HTTP CODE*/} catch (error) {/*CATCH THE ERROR*/}
+  Future<bool> deleteEvent({String id}) async {
+    _isLoading = true;
+
+    final int deletedEventIndex = _events.indexWhere((Event event) {
+      return event.id == id;
+    });
+    _events.removeAt(deletedEventIndex);
+    notifyListeners();
+
+    try {
+      http.delete(
+          'https://reach-app-1.firebaseio.com/events/$id.json?auth=${_authenticatedUser.token}');
+
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    } catch (error) {
+      _isLoading = false;
+      notifyListeners();
+
+      print('error with delete card http request');
+      return false;
+    }
   }
 
   //FETCH EVENTS
-  Future<Null> fetchEvents() {
-    try {/*HTTP CODE*/} catch (error) {/*CATCH THE ERROR*/}
+  Future<bool> fetchEvents() async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      final http.Response response = await http.get(
+          'https://reach-app-1.firebaseio.com/events.json?auth=${_authenticatedUser.token}');
+      _isLoading = false;
+      notifyListeners();
+      final List<Event> fetchedEventList = [];
+      final Map<String, dynamic> eventListData = json.decode(response.body);
+
+      if (eventListData == null) {
+        _isLoading = false;
+        notifyListeners();
+        return false;
+      }
+
+      // go through each fetched event from the gathered data, this will create a list of all the events on the server
+      eventListData.forEach((String eventID, dynamic eventData) {
+        //create a new event for each and assign it values from the fetched json data
+        final Event event = Event(
+          id: eventID,
+          title: eventData['title'],
+          description: eventData['description'],
+          location: eventData['location'],
+          hostEmail: eventData['hostEmail'],
+          hostID: eventData['hostID'],
+        );
+        //add it to the fetched card list
+        fetchedEventList.add(event);
+      });
+      
+      // replace existing events with the newly fetched events from the server
+      _events = fetchedEventList;
+
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    } catch (error) {
+      _isLoading = false;
+      notifyListeners();
+
+      print('error with fetch events http request');
+      return false;
+    }
   }
 }
 
