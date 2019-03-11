@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 
 import '../widgets/bottom_bar_3.dart';
-import './home.dart';
-import './profile.dart';
-import './events.dart';
 
 import '../scoped_models/main_model.dart';
-
+import '../models/tabItem.dart';
+import '../tools/tab_navigator.dart';
 
 class DefaultPage extends StatefulWidget {
   final MainModel model;
   DefaultPage(this.model);
-  
+
   @override
   State<StatefulWidget> createState() {
     return _DefaultPageState();
@@ -19,35 +17,71 @@ class DefaultPage extends StatefulWidget {
 }
 
 class _DefaultPageState extends State<DefaultPage> {
-   
-   //to make new EVENTS BRO AS A TEST AHAHAHAHAHAHAH
-   void initState(){
-      widget.model.addEvent('title', 'description', 'location');
-      super.initState();
+  TabItem currentTab = TabItem.home;
+  Map<TabItem, GlobalKey<NavigatorState>> navigatorKeys = {
+    TabItem.events: GlobalKey<NavigatorState>(),
+    TabItem.home: GlobalKey<NavigatorState>(),
+    TabItem.profile: GlobalKey<NavigatorState>(),
+  };
+
+  void _selectTab(int index) {
+    TabItem tabItem;
+    switch (index) {
+      case 0:
+        tabItem = TabItem.events;
+        break;
+      case 1:
+        tabItem = TabItem.home;
+        break;
+      case 2:
+        tabItem = TabItem.profile;
+        break;  
     }
-
-
-  int _selectedPage = 1;
-  final _pageOptions = [
-    EventsPage(),
-    HomePage(),
-    ProfilePage(),
-  ];
-
-
-  void _updateState (int index) {
     setState(() {
-      _selectedPage = index;
+      currentTab = tabItem;
     });
+  }
+
+  // int _selectedPage = 1;
+  // final _pageOptions = [
+  //   EventsPage(),
+  //   HomePage(),
+  //   ProfilePage(),
+  // ];
+
+  //to make new EVENTS BRO AS A TEST AHAHAHAHAHAHAH
+  @override
+  void initState() {
+    widget.model.addEvent('title', 'description', 'location');
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        bottomNavigationBar: SimpleBottomAppBar(_updateState),
-        body: _pageOptions[_selectedPage],
-        );
+    return WillPopScope(
+      onWillPop: () async =>
+          !await navigatorKeys[currentTab].currentState.maybePop(),
+      child: Scaffold(
+        bottomNavigationBar: SimpleBottomAppBar(
+          onSelectTab: _selectTab,
+        ),
+        // body: _pageOptions[_selectedPage],
+        body: Stack(children: <Widget>[
+          _buildOffstageNavigator(TabItem.events),
+          _buildOffstageNavigator(TabItem.home),
+          _buildOffstageNavigator(TabItem.profile),
+        ]),
+      ),
+    );
+  }
+
+  Widget _buildOffstageNavigator(TabItem tabItem) {
+    return Offstage(
+      offstage: currentTab != tabItem,
+      child: TabNavigator(
+        navigatorKey: navigatorKeys[tabItem],
+        tabItem: tabItem,
+      ),
+    );
   }
 }
-
-

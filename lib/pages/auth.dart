@@ -124,7 +124,8 @@ class _AuthPageState extends State<AuthPage> {
         _formData['email'], _formData['password'], _authMode);
 
     if (response['success']) {
-      Navigator.pushReplacementNamed(context, '/default');
+      // no longer need since we are updating this using RXdart's listener thingsy
+      // Navigator.pushReplacementNamed(context, '/default');
     } else {
       showDialog(
         context: context,

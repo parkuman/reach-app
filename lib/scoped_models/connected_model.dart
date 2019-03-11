@@ -1,8 +1,10 @@
+import 'dart:convert';
+import 'dart:async';
+
 import 'package:scoped_model/scoped_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
-import 'dart:async';
+import 'package:rxdart/subjects.dart';
 
 import '../models/event.dart';
 import '../models/user.dart';
@@ -104,6 +106,11 @@ mixin EventModel on ConnectedModel {
 // Scoped model for the user sign in
 mixin UserModel on ConnectedModel {
   Timer _authTimer;
+  PublishSubject<bool> _userSubject = PublishSubject();
+
+  PublishSubject<bool> get userSubject {
+    return _userSubject;
+  }
 
   User get authenticatedUser {
     return _authenticatedUser;
@@ -147,6 +154,9 @@ mixin UserModel on ConnectedModel {
       );
 
       setAuthTimeout(int.parse(responseData['expiresIn']));
+
+      //update the state of the user subject to true (therefore authenticated)
+      _userSubject.add(true);
 
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final DateTime now = DateTime.now();
@@ -193,6 +203,9 @@ mixin UserModel on ConnectedModel {
       final int tokenLifespan = parsedExpiryTime.difference(now).inSeconds;
       _authenticatedUser = User(id: userId, email: userEmail, token: token);
 
+      //update the state of the user subject to true (therefore authenticated)
+      _userSubject.add(true);
+
       setAuthTimeout(tokenLifespan);
       notifyListeners();
     }
@@ -201,11 +214,16 @@ mixin UserModel on ConnectedModel {
   void logout() async {
     //clear authenticated user
     _authenticatedUser = null;
+    //update the state of the user subject to false (therefore unauthenticated)
+    _userSubject.add(false);
     _authTimer.cancel();
+
+    //remove all the locally stores user info
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove('token');
     prefs.remove('userEmail');
     prefs.remove('userId');
+
     notifyListeners();
   }
 

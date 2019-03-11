@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/animation.dart';
 
 class SimpleBottomAppBar extends StatefulWidget {
-  //TO USE THIS IN THE STATE CLASS USE "widget.updateState()"
-  final Function updateState;
-  SimpleBottomAppBar(this.updateState);
+  //TO USE THIS IN THE STATE CLASS USE "widget.onSelectTab()"
+  final Function onSelectTab;
+  SimpleBottomAppBar({this.onSelectTab});
 
   @override
   State<StatefulWidget> createState() {
@@ -250,7 +250,7 @@ class _SimpleBottomAppBarState extends State<SimpleBottomAppBar>
       previousIndex = currentIndex;
       currentIndex = pressedIndex;
       print('calling update state with index: ' + currentIndex.toString());
-      widget.updateState(currentIndex);
+      widget.onSelectTab(currentIndex);
       _controller.reset();
       _controller.forward();
     }

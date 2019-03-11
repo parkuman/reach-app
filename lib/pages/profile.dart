@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatelessWidget {
+  final Function onSettingsButton;
+  ProfilePage({this.onSettingsButton});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -10,9 +13,7 @@ class ProfilePage extends StatelessWidget {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.settings),
-            onPressed: () {
-              Navigator.pushNamed(context, '/settings');
-            },
+            onPressed: () => onSettingsButton(), // Navigator.pushNamed(context, '/settings');
           )
         ],
       ),
@@ -48,7 +49,9 @@ class ProfilePage extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 10.0,),
+          SizedBox(
+            height: 10.0,
+          ),
           Divider(
             color: Colors.black,
           ),

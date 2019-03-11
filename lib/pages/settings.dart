@@ -38,7 +38,8 @@ class SettingsPage extends StatelessWidget {
                 onTap: () {
                   model.logout();
                   Navigator.pop(context);
-                  Navigator.pushReplacementNamed(context, '/');
+                  // no longer needed due to state management with RX darts publish listen thingysy
+                  // Navigator.pushReplacementNamed(context, '/');
                 },
               );
             },
