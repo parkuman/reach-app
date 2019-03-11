@@ -18,6 +18,15 @@ mixin ConnectedModel on Model {
 }
 
 mixin EventModel on ConnectedModel {
+  List<Event> get allEvents {
+    return List.from(_events);
+  }
+
+  List<Event> get displayedEvents {
+    //CONDITIONALS
+    return List.from(_events);
+  }
+
   // ADD EVENT
   Future<bool> addEvent(
       String title, String description, String location) async {
@@ -155,8 +164,11 @@ mixin EventModel on ConnectedModel {
       final List<Event> fetchedEventList = [];
       final Map<String, dynamic> eventListData = json.decode(response.body);
 
+      // if nothing is returned from the server, there are no cards
       if (eventListData == null) {
         _isLoading = false;
+        // therefore set events to be empty
+        _events = [];
         notifyListeners();
         return false;
       }
@@ -175,7 +187,7 @@ mixin EventModel on ConnectedModel {
         //add it to the fetched card list
         fetchedEventList.add(event);
       });
-      
+
       // replace existing events with the newly fetched events from the server
       _events = fetchedEventList;
 

@@ -42,17 +42,11 @@ class _DefaultPageState extends State<DefaultPage> {
     });
   }
 
-  // int _selectedPage = 1;
-  // final _pageOptions = [
-  //   EventsPage(),
-  //   HomePage(),
-  //   ProfilePage(),
-  // ];
 
   //to make new EVENTS BRO AS A TEST AHAHAHAHAHAHAH
   @override
   void initState() {
-    widget.model.addEvent('title', 'description', 'location');
+    // widget.model.addEvent('title', 'description', 'location');
     super.initState();
   }
 
@@ -81,6 +75,7 @@ class _DefaultPageState extends State<DefaultPage> {
       child: TabNavigator(
         navigatorKey: navigatorKeys[tabItem],
         tabItem: tabItem,
+        model: widget.model,
       ),
     );
   }

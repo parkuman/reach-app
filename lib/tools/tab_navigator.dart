@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 // import 'package:nested_navigation_demo_flutter/color_detail_page.dart';
 // import 'package:nested_navigation_demo_flutter/colors_list_page.dart';
 
+import '../scoped_models/main_model.dart';
 import '../models/tabItem.dart';
 import '../pages/events.dart';
 import '../pages/home.dart';
@@ -15,9 +16,10 @@ class TabNavigatorRoutes {
 }
 
 class TabNavigator extends StatelessWidget {
-  TabNavigator({this.navigatorKey, this.tabItem});
+  TabNavigator({this.navigatorKey, this.tabItem, this.model});
   final GlobalKey<NavigatorState> navigatorKey;
   final TabItem tabItem;
+   final MainModel model;
 
   // FOR PUSHING CERTAIN THINGSS
   void _settings(BuildContext context) {
@@ -34,7 +36,7 @@ class TabNavigator extends StatelessWidget {
     return {
       TabNavigatorRoutes.root: (context) {
         if (tabItem == TabItem.events) {
-          return EventsPage();
+          return EventsPage(model);
         } else if (tabItem == TabItem.home) {
           return HomePage();
         } else if (tabItem == TabItem.profile) {
