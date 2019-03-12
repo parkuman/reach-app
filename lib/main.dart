@@ -6,7 +6,7 @@ import 'package:scoped_model/scoped_model.dart';
 import './pages/default_view.dart';
 import './pages/settings.dart';
 import './pages/auth.dart';
-
+//
 //CUSTOM MODELS
 import './scoped_models/main_model.dart';
 import './models/event.dart';
