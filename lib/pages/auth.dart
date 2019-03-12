@@ -16,6 +16,7 @@ class _AuthPageState extends State<AuthPage> {
   final TextEditingController _passwordTextController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final Map<String, dynamic> _formData = {
+    'name': null,
     'email': null,
     'password': null,
     'accept': false,
@@ -27,6 +28,21 @@ class _AuthPageState extends State<AuthPage> {
       colorFilter:
           ColorFilter.mode(Colors.black.withOpacity(0.2), BlendMode.dstATop),
       image: AssetImage('assets/event.jpg'),
+    );
+  }
+
+  Widget _buildNameTextField() {
+    return TextFormField(
+      decoration: InputDecoration(
+          labelText: 'name', filled: true, fillColor: Colors.white),
+      validator: (String value) {
+        if (value.isEmpty) {
+          return 'Invalid Name';
+        }
+      },
+      onSaved: (String value) {
+        _formData['name'] = value;
+      },
     );
   }
 
@@ -121,7 +137,11 @@ class _AuthPageState extends State<AuthPage> {
     _formKey.currentState.save();
 
     response = await authenticate(
-        _formData['email'], _formData['password'], _authMode);
+      _formData['name'],
+      _formData['email'],
+      _formData['password'],
+      _authMode,
+    );
 
     if (response['success']) {
       // no longer need since we are updating this using RXdart's listener thingsy
@@ -165,6 +185,13 @@ class _AuthPageState extends State<AuthPage> {
             child: SingleChildScrollView(
               child: Column(
                 children: <Widget>[
+                  //ONLY RENDER NAME TEXTFIELD IF WE ARE IN SIGN UP MODE
+                  (_authMode == AuthMode.Signup)
+                      ? _buildNameTextField()
+                      : Container(),
+                  SizedBox(
+                    height: 10.0,
+                  ),
                   _buildEmailTextField(),
                   SizedBox(
                     height: 10.0,
@@ -185,7 +212,6 @@ class _AuthPageState extends State<AuthPage> {
                   SizedBox(
                     height: 10.0,
                   ),
-                  // FIX THIS SHIT BIG BOI
                   ScopedModelDescendant(
                     builder:
                         (BuildContext context, Widget child, MainModel model) {

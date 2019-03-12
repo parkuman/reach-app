@@ -35,14 +35,15 @@ class EventsList extends StatelessWidget {
     return eventItem;
   }
 
-
   Widget eventCard(Event event, int index) {
     return ScopedModelDescendant(
       builder: (BuildContext context, Widget child, MainModel model) {
         return Dismissible(
-          key: Key(model.displayedEvents[index].title),
+          key: Key(model.displayedEvents[index].id),
           onDismissed: (DismissDirection direction) {
-            // delete
+            model.deleteEvent(
+              id: event.id,
+            );
           },
           child: GestureDetector(
             onTap: () {
@@ -70,7 +71,7 @@ class EventsList extends StatelessWidget {
                           ),
                         ),
                         Text('${event.hostEmail}'),
-                        Text('${event.hostID}'),
+                        Text('${event.id}'),
                       ],
                     ),
                     //SPACE BETWEEN PIC AND TEXT

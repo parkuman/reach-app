@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../scoped_models/main_model.dart';
+
 class ProfilePage extends StatelessWidget {
   final Function onSettingsButton;
-  ProfilePage({this.onSettingsButton});
+  final MainModel model;
+  ProfilePage({this.onSettingsButton, this.model});
 
   @override
   Widget build(BuildContext context) {
@@ -29,20 +32,20 @@ class ProfilePage extends StatelessWidget {
                 ),
               ),
               Text(
-                'User',
+                '${model.authenticatedUser.name}',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 26.0,
                 ),
               ),
               Text(
-                'email',
+                '${model.authenticatedUser.email}',
                 style: TextStyle(
                   fontSize: 16.0,
                 ),
               ),
               Text(
-                'age',
+                '${model.authenticatedUser.id}',
                 style: TextStyle(
                   fontSize: 16.0,
                 ),

@@ -132,8 +132,11 @@ mixin EventModel on ConnectedModel {
     final int deletedEventIndex = _events.indexWhere((Event event) {
       return event.id == id;
     });
-    _events.removeAt(deletedEventIndex);
+    print('before: $_events');
     notifyListeners();
+    _events.removeAt(deletedEventIndex);
+    print('after: $_events');
+    
 
     try {
       http.delete(
@@ -217,12 +220,14 @@ mixin UserModel on ConnectedModel {
     return _authenticatedUser;
   }
 
-  Future<Map<String, dynamic>> authenticate(String email, String password,
+  Future<Map<String, dynamic>> authenticate(
+      String name, String email, String password,
       [AuthMode mode = AuthMode.Login]) async {
     _isLoading = true;
     notifyListeners();
 
     final Map<String, dynamic> authData = {
+      'name': name,
       'email': email,
       'password': password,
       'returnSecureToken': true,
@@ -248,8 +253,10 @@ mixin UserModel on ConnectedModel {
       success = true;
       message = 'Authentication Succeded!';
       //tell the program a new user is signed in
+      print('authentication: $name');
       _authenticatedUser = User(
         id: responseData['localId'],
+        name: name,
         email: email,
         token: responseData['idToken'],
       );
@@ -265,9 +272,11 @@ mixin UserModel on ConnectedModel {
           now.add(Duration(seconds: int.parse(responseData['expiresIn'])));
 
       prefs.setString('token', responseData['idToken']);
+      prefs.setString('userName', name);
       prefs.setString('userEmail', email);
       prefs.setString('userId', responseData['localId']);
       prefs.setString('expiryTime', expiryTime.toIso8601String());
+      print('prefs set check: ${prefs.getString('userName')}');
     } else if (responseData['error']['message'] == 'EMAIL_NOT_FOUND') {
       message = 'This email was not found';
     } else if (responseData['error']['message'] == 'INVALID_PASSWORD') {
@@ -301,8 +310,15 @@ mixin UserModel on ConnectedModel {
 
       final String userEmail = prefs.getString('userEmail');
       final String userId = prefs.getString('userId');
+      final String userName = prefs.getString('userName');
       final int tokenLifespan = parsedExpiryTime.difference(now).inSeconds;
-      _authenticatedUser = User(id: userId, email: userEmail, token: token);
+      print('auto auth name: $userName');
+      _authenticatedUser = User(
+        id: userId,
+        name: userName,
+        email: userEmail,
+        token: token,
+      );
 
       //update the state of the user subject to true (therefore authenticated)
       _userSubject.add(true);
@@ -324,6 +340,7 @@ mixin UserModel on ConnectedModel {
     prefs.remove('token');
     prefs.remove('userEmail');
     prefs.remove('userId');
+    prefs.remove('userName');
 
     notifyListeners();
   }

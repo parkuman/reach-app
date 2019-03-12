@@ -4,6 +4,8 @@ import 'package:scoped_model/scoped_model.dart';
 import '../scoped_models/main_model.dart';
 
 class HomePage extends StatefulWidget {
+  final MainModel model;
+  HomePage(this.model);
 
   @override
   State<StatefulWidget> createState() {
@@ -12,7 +14,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   @override
   void initState() {
     super.initState();
@@ -20,12 +21,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant(
-      builder: (BuildContext context, Widget child, MainModel model) {
-        return Center(
-          child: Text(model.authenticatedUser.email),
-        );
-      },
+    return Center(
+      child: Text(widget.model.authenticatedUser.email),
     );
   }
 }

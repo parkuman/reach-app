@@ -19,7 +19,7 @@ class TabNavigator extends StatelessWidget {
   TabNavigator({this.navigatorKey, this.tabItem, this.model});
   final GlobalKey<NavigatorState> navigatorKey;
   final TabItem tabItem;
-   final MainModel model;
+  final MainModel model;
 
   // FOR PUSHING CERTAIN THINGSS
   void _settings(BuildContext context) {
@@ -27,7 +27,8 @@ class TabNavigator extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => routeBuilders[TabNavigatorRoutes.settings](context),
+        builder: (context) =>
+            routeBuilders[TabNavigatorRoutes.settings](context),
       ),
     );
   }
@@ -38,12 +39,15 @@ class TabNavigator extends StatelessWidget {
         if (tabItem == TabItem.events) {
           return EventsPage(model);
         } else if (tabItem == TabItem.home) {
-          return HomePage();
+          return HomePage(model);
         } else if (tabItem == TabItem.profile) {
-          return ProfilePage(onSettingsButton: () => _settings(context));
+          return ProfilePage(
+            onSettingsButton: () => _settings(context),
+            model: model,
+          );
         }
       },
-      
+
       //for the settings page on the profile screen
       TabNavigatorRoutes.settings: (context) => SettingsPage(),
     };

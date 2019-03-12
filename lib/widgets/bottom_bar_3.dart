@@ -249,7 +249,6 @@ class _SimpleBottomAppBarState extends State<SimpleBottomAppBar>
     if (pressedIndex  != currentIndex) {
       previousIndex = currentIndex;
       currentIndex = pressedIndex;
-      print('calling update state with index: ' + currentIndex.toString());
       widget.onSelectTab(currentIndex);
       _controller.reset();
       _controller.forward();
