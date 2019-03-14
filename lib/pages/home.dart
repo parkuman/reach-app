@@ -22,7 +22,13 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text(widget.model.authenticatedUser.email),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text('Signed-In as:'),
+          Text(widget.model.authenticatedUser.email),
+        ],
+      ),
     );
   }
 }
