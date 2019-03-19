@@ -3,30 +3,56 @@ import 'package:scoped_model/scoped_model.dart';
 
 import '../scoped_models/main_model.dart';
 
+
 class SettingsPage extends StatelessWidget {
+final MainModel model;
+SettingsPage(this.model);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('Settings', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text('My Settings', style: TextStyle(fontWeight: FontWeight.bold)),
       ),
-      // body: Center(child: Text('Settings')),
+      
       body: ListView(
         children: <Widget>[
           ListTile(
-            title: Text('Setting 1'),
+           
+             title: Text('Name', style: TextStyle(fontWeight: FontWeight.bold),),
+             subtitle: Text('${model.authenticatedUser.name}'),
             onTap: () {},
           ),
           ListTile(
-            title: Text('Setting 2'),
+            title: Text('Username', style: TextStyle(fontWeight: FontWeight.bold),),
+            subtitle: Text('${model.authenticatedUser.id}'),
             onTap: () {},
           ),
           ListTile(
-            title: Text('Setting 3'),
+            title: Text('Email', style: TextStyle(fontWeight: FontWeight.bold),),
+            subtitle: Text('${model.authenticatedUser.email}'),
             onTap: () {},
           ),
-          ListTile(),
+          ListTile(
+            title: Text('Birthday', style: TextStyle(fontWeight: FontWeight.bold),),
+            subtitle: Text('03/03/2000'),
+            onTap: () {},
+          
+          ),ListTile(
+            title: Text('Phone Number', style: TextStyle(fontWeight: FontWeight.bold),),
+            subtitle: Text('613-784-0122'),
+            onTap: () {},
+          
+          ),ListTile(
+            title: Text('Passwords', style: TextStyle(fontWeight: FontWeight.bold),),
+            onTap: () {},
+          
+          ),ListTile(
+            title: Text('Privacy', style: TextStyle(fontWeight: FontWeight.bold),),
+            onTap: () {},
+          
+          ),
           ListTile(
             title:
                 Text('Logins', style: TextStyle(fontWeight: FontWeight.bold)),
