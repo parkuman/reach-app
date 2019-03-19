@@ -57,7 +57,7 @@ class _MyAppState extends State<MyApp> {
               (_isAuthenticated) ? DefaultPage(_model) : AuthPage(),
           // '/settings' is the settings page. If we are on the settings page and get logged out, then we will be redirected to authentication page again
           '/settings': (BuildContext context) =>
-              (_isAuthenticated) ? SettingsPage() : AuthPage(),
+              (_isAuthenticated) ? SettingsPage(_model) : AuthPage(),
         },
 
         //this is for when the app wants to make a new page using named routes. This will be like go to event 1's info page and passed as '/event1'. This is dynamic

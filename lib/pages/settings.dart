@@ -5,8 +5,8 @@ import '../scoped_models/main_model.dart';
 
 
 class SettingsPage extends StatelessWidget {
-//final MainModel model;
-//SettingsPage(this.model)
+final MainModel model;
+SettingsPage(this.model);
 
   @override
   Widget build(BuildContext context) {
@@ -21,18 +21,17 @@ class SettingsPage extends StatelessWidget {
           ListTile(
            
              title: Text('Name', style: TextStyle(fontWeight: FontWeight.bold),),
-             subtitle: Text('Gavin'),
+             subtitle: Text('${model.authenticatedUser.name}'),
             onTap: () {},
           ),
           ListTile(
             title: Text('Username', style: TextStyle(fontWeight: FontWeight.bold),),
-            subtitle: Text('Gav Gav'),
+            subtitle: Text('${model.authenticatedUser.id}'),
             onTap: () {},
           ),
           ListTile(
             title: Text('Email', style: TextStyle(fontWeight: FontWeight.bold),),
-            //subtitle: Text('${model.authenticatedUser.email}'),
-            subtitle: Text('gav@gmail.com'),
+            subtitle: Text('${model.authenticatedUser.email}'),
             onTap: () {},
           ),
           ListTile(

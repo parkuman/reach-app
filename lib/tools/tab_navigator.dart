@@ -49,7 +49,7 @@ class TabNavigator extends StatelessWidget {
       },
 
       //for the settings page on the profile screen
-      TabNavigatorRoutes.settings: (context) => SettingsPage(),
+      TabNavigatorRoutes.settings: (context) => SettingsPage(model),
     };
   }
 
