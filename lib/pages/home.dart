@@ -25,7 +25,7 @@ class _HomePageState extends State<HomePage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text('Signed-In as:'),
+          Text('Signed In as:'),
           Text(widget.model.authenticatedUser.email),
         ],
       ),
