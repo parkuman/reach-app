@@ -32,6 +32,20 @@ class _HomePageState extends State<HomePage> {
     _mapController.complete(controller);
   }
 
+
+  Future<void> _centerOnUser() async {
+    final GoogleMapController controller = await _mapController.future;
+    controller.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: LatLng(45.521563, -122.677433),
+          tilt: 40,
+          zoom: 17,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -42,8 +56,17 @@ class _HomePageState extends State<HomePage> {
             target: _initialCameraPosition,
             zoom: 14,
           ),
+          myLocationEnabled: true,
         ),
-        
+        Positioned(
+          top: 40.0,
+          right: 15.0,
+          child: FloatingActionButton(
+            backgroundColor: Theme.of(context).accentColor,
+            child: Icon(Icons.location_searching),
+            onPressed: _centerOnUser,
+          ),
+        ),
       ],
     );
   }

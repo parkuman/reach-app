@@ -3,6 +3,8 @@
 <plist version="1.0">
 <dict>
 	<!-- GOOGLE MAPS -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app needs access to location when open.</string>
 	<key>io.flutter.embedded_views_preview</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
