@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 
 import '../scoped_models/main_model.dart';
 
@@ -20,11 +21,16 @@ class _HomePageState extends State<HomePage> {
   // the controller that controls the google map
   Completer<GoogleMapController> _mapController = Completer();
 
-  static const LatLng _initialCameraPosition =
-      const LatLng(45.521563, -122.677433);
+  var _currentLocation = <String, double>{};
+  var _location = Location();
+  LatLng _currentLocationLatLng;
 
   @override
   void initState() {
+    // by default location is queens
+    _currentLocationLatLng = LatLng(44.2247881, -76.4995687);
+    // get the user location when map loads
+    _fetchUserLocation(moveCamera: true);
     super.initState();
   }
 
@@ -32,15 +38,31 @@ class _HomePageState extends State<HomePage> {
     _mapController.complete(controller);
   }
 
+  void _fetchUserLocation({moveCamera = false}) async {
+    try {
+      _currentLocation = await _location.getLocation();
+      _currentLocationLatLng =
+          LatLng(_currentLocation['latitude'], _currentLocation['longitude']);
+      // if moveCamera is true, then run a function to move the camera to the users location
+      if (moveCamera) _moveCamera(latLng: _currentLocationLatLng, zoom: 14.0);
+    } catch (e) {
+      _currentLocation = null;
+    }
+  }
 
-  Future<void> _centerOnUser() async {
+  Future<void> _moveCamera(
+      {LatLng latLng,
+      double tilt = 0.0,
+      double zoom = 0.0,
+      double bearing = 0.0}) async {
     final GoogleMapController controller = await _mapController.future;
     controller.animateCamera(
       CameraUpdate.newCameraPosition(
         CameraPosition(
-          target: LatLng(45.521563, -122.677433),
-          tilt: 40,
-          zoom: 17,
+          target: latLng,
+          tilt: tilt,
+          zoom: zoom,
+          bearing: bearing,
         ),
       ),
     );
@@ -53,18 +75,19 @@ class _HomePageState extends State<HomePage> {
         GoogleMap(
           onMapCreated: _onMapCreated,
           initialCameraPosition: CameraPosition(
-            target: _initialCameraPosition,
+            target: _currentLocationLatLng,
             zoom: 14,
           ),
           myLocationEnabled: true,
         ),
         Positioned(
-          top: 40.0,
+          bottom: 15.0,
           right: 15.0,
           child: FloatingActionButton(
             backgroundColor: Theme.of(context).accentColor,
             child: Icon(Icons.location_searching),
-            onPressed: _centerOnUser,
+            onPressed: () =>
+                _moveCamera(latLng: _currentLocationLatLng, tilt: 30, zoom: 17),
           ),
         ),
       ],
