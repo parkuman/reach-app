@@ -35,19 +35,11 @@ class _DefaultPageState extends State<DefaultPage> {
         break;
       case 2:
         tabItem = TabItem.profile;
-        break;  
+        break;
     }
     setState(() {
       currentTab = tabItem;
     });
-  }
-
-
-  //to make new EVENTS BRO AS A TEST AHAHAHAHAHAHAH
-  @override
-  void initState() {
-    // widget.model.addEvent('title', 'description', 'location');
-    super.initState();
   }
 
   @override
@@ -59,7 +51,6 @@ class _DefaultPageState extends State<DefaultPage> {
         bottomNavigationBar: SimpleBottomAppBar(
           onSelectTab: _selectTab,
         ),
-        // body: _pageOptions[_selectedPage],
         body: Stack(children: <Widget>[
           _buildOffstageNavigator(TabItem.events),
           _buildOffstageNavigator(TabItem.home),
