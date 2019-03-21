@@ -64,14 +64,14 @@ class EventsList extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          'Event',
+                          '${event.title}',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 20.0,
                           ),
                         ),
-                        Text('${event.hostEmail}'),
-                        Text('${event.id}'),
+                        Text('Description: ${event.description}'),
+                        Text('Host: ${event.hostEmail}'),
                       ],
                     ),
                     //SPACE BETWEEN PIC AND TEXT

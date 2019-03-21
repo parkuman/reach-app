@@ -9,7 +9,6 @@ import './pages/auth.dart';
 //
 //CUSTOM MODELS
 import './scoped_models/main_model.dart';
-import './models/event.dart';
 
 void main() => runApp(MyApp());
 

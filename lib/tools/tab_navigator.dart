@@ -9,10 +9,12 @@ import '../pages/events.dart';
 import '../pages/home.dart';
 import '../pages/profile.dart';
 import '../pages/settings.dart';
+import '../pages/event_create.dart';
 
 class TabNavigatorRoutes {
   static const String root = '/';
   static const String settings = '/settings';
+  static const String createEvent = '/createEvent';
 }
 
 class TabNavigator extends StatelessWidget {
@@ -33,11 +35,26 @@ class TabNavigator extends StatelessWidget {
     );
   }
 
+  // FOR PUSHING CERTAIN THINGSS
+  void _createEvent(BuildContext context) {
+    var routeBuilders = _routeBuilders(context);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            routeBuilders[TabNavigatorRoutes.createEvent](context),
+      ),
+    );
+  }
+
   Map<String, WidgetBuilder> _routeBuilders(BuildContext context) {
     return {
       TabNavigatorRoutes.root: (context) {
         if (tabItem == TabItem.events) {
-          return EventsPage(model);
+          return EventsPage(
+            onCreateEventButton: () => _createEvent(context),
+            model: model,
+          );
         } else if (tabItem == TabItem.home) {
           return HomePage(model);
         } else if (tabItem == TabItem.profile) {
@@ -50,6 +67,8 @@ class TabNavigator extends StatelessWidget {
 
       //for the settings page on the profile screen
       TabNavigatorRoutes.settings: (context) => SettingsPage(model),
+      //for the create event page on the events screen
+      TabNavigatorRoutes.createEvent: (context) => EventCreatePage(model),
     };
   }
 

@@ -29,15 +29,22 @@ class _HomePageState extends State<HomePage>
   // controllers for the bottom sliding page and for the scrolling of that page and its contents
   RubberAnimationController _rubberAnimationController;
   ScrollController _scrollController = ScrollController();
+  bool collapseBottomSheet = false;
 
   @override
   void initState() {
-    // create the settings of the moveable bottom page using a pre-made widget
-    _buildRubberAnimationController();
     // by default location is queens
     _currentLocationLatLng = LatLng(44.2247881, -76.4995687);
     // get the user location when map loads
     _fetchUserLocation(moveCamera: true);
+
+    // create the settings of the moveable bottom page using a pre-made widget
+    _buildRubberAnimationController();
+
+    // wait 3 seconds to enable to "autohide" feature of scrolling on the map. This makes the bottom sheet appear half way up when the app starts
+    Future.delayed(Duration(seconds: 3), () {
+      collapseBottomSheet = true;
+    });
     super.initState();
   }
 
@@ -98,11 +105,11 @@ class _HomePageState extends State<HomePage>
     _rubberAnimationController = RubberAnimationController(
         vsync: this,
         dismissable: false, // GO AWAY
-        initialValue: 0.3, // to make the bottom sheet load up at about 30% of the screen height (just like the half bound value)
+        initialValue:
+            0.3, // to make the bottom sheet load up at about 30% of the screen height (just like the half bound value)
         halfBoundValue: AnimationControllerValue(percentage: 0.3),
         upperBoundValue: AnimationControllerValue(percentage: 1.0),
         lowerBoundValue: AnimationControllerValue(percentage: 0.03),
-        // initialValue: 0.30,
         springDescription: SpringDescription.withDampingRatio(
           mass: 1,
           stiffness: Stiffness.LOW,
@@ -111,14 +118,17 @@ class _HomePageState extends State<HomePage>
         duration: Duration(milliseconds: 200));
   }
 
-
   // THE ENTIRETY OF THE HOME PAGE BENEATH THE SLIDEY MOVING BOTTOM SHEET, this holds a stack with the google map and any of its buttons
   Widget _buildLowerLayer() {
     return Stack(
       children: <Widget>[
         GoogleMap(
           onMapCreated: _onMapCreated,
-          onCameraMoveStarted: _collapseBottomSheet,
+          onCameraMoveStarted: () {
+            if (collapseBottomSheet) {
+              _collapseBottomSheet();
+            }
+          },
           initialCameraPosition: CameraPosition(
             target: _currentLocationLatLng,
             zoom: 14,
@@ -171,7 +181,6 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-
   Widget _buildEventsList() {
     return ScopedModelDescendant<MainModel>(
       builder: (BuildContext context, Widget child, MainModel model) {
@@ -195,7 +204,7 @@ class _HomePageState extends State<HomePage>
                       radius: 30.0,
                     ),
                     title: Text(model.allEvents[index].title),
-                    subtitle: Text("Big Event Here"),
+                    subtitle: Text('Description: ${model.allEvents[index].description}'),
                     trailing: IconButton(
                       icon: Icon(Icons.arrow_right),
                       onPressed: () {},

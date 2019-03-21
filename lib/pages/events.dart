@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 import '../widgets/events_list.dart';
-import '../models/event.dart';
 import '../scoped_models/main_model.dart';
 
 class EventsPage extends StatefulWidget {
   final MainModel model;
-  EventsPage(this.model);
+  final Function onCreateEventButton;
+  EventsPage({this.model, this.onCreateEventButton});
 
   @override
   State<StatefulWidget> createState() {
@@ -30,9 +30,10 @@ class _EventsPageState extends State<EventsPage> {
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
           onPressed: () {
-            setState(() {
-              widget.model.addEvent(widget.model.authenticatedUser.email, widget.model.authenticatedUser.id, 'location');
-            });
+            widget.onCreateEventButton();
+            // setState(() {
+            //   widget.model.addEvent(widget.model.authenticatedUser.email, widget.model.authenticatedUser.id, 'location');
+            // });
           },
         ),
         appBar: AppBar(
