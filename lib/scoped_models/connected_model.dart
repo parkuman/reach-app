@@ -5,6 +5,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:rxdart/subjects.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../models/event.dart';
 import '../models/user.dart';
@@ -28,14 +29,16 @@ mixin EventModel on ConnectedModel {
   }
 
   // ADD EVENT
-  Future<bool> addEvent(
-      String title, String description, String location) async {
+  Future<bool> addEvent(String title, String description, double latitude,
+      double longitude, String location) async {
     _isLoading = true;
     notifyListeners();
 
     final Map<String, dynamic> eventData = {
       'title': title,
       'description': description,
+      'latitude': latitude,
+      'longitude': longitude,
       'location': location,
       'hostEmail': _authenticatedUser.email,
       'hostID': _authenticatedUser.id,
@@ -51,6 +54,8 @@ mixin EventModel on ConnectedModel {
         id: responseData['name'],
         title: title,
         description: description,
+        latitude: latitude,
+        longitude: longitude,
         location: location,
         hostEmail: _authenticatedUser.email,
         hostID: _authenticatedUser.id,
@@ -72,7 +77,8 @@ mixin EventModel on ConnectedModel {
 
   // UPDATE EVENT
   Future<bool> updateEvent(
-      {String title, String description, String location, String id}) async {
+      {String title, String description, double latitude,
+      double longitude, String location, String id}) async {
     _isLoading = true;
     notifyListeners();
 
@@ -85,6 +91,8 @@ mixin EventModel on ConnectedModel {
     final Map<String, dynamic> updateData = {
       'title': title,
       'description': description,
+      'latitude': latitude,
+      'longitude': longitude,
       'location': location,
       'hostEmail': eventToUpdate.hostEmail,
       'hostID': eventToUpdate.hostID,
@@ -102,6 +110,8 @@ mixin EventModel on ConnectedModel {
         id: eventToUpdate.id,
         title: title,
         description: description,
+        latitude: latitude,
+        longitude: longitude,
         location: location,
         hostEmail: eventToUpdate.hostEmail,
         hostID: eventToUpdate.hostID,
@@ -136,7 +146,6 @@ mixin EventModel on ConnectedModel {
     notifyListeners();
     _events.removeAt(deletedEventIndex);
     print('after: $_events');
-    
 
     try {
       http.delete(
@@ -183,6 +192,8 @@ mixin EventModel on ConnectedModel {
           id: eventID,
           title: eventData['title'],
           description: eventData['description'],
+          latitude: eventData['latitude'],
+          longitude: eventData['longitude'],
           location: eventData['location'],
           hostEmail: eventData['hostEmail'],
           hostID: eventData['hostID'],

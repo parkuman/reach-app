@@ -4,6 +4,21 @@ import 'package:scoped_model/scoped_model.dart';
 import '../scoped_models/main_model.dart';
 import '../models/event.dart';
 
+import '../widgets/custom_location_search_bar.dart';
+
+double latitude;
+double longitude;
+String location;
+bool showLocationResults = true;
+
+void setLocation(double lat, double lng, String loc) {
+  print('set location with lat: $lat, lng: $lng, and location: $location');
+  latitude = lat;
+  longitude = lng;
+  location = loc;
+  showLocationResults = false;
+}
+
 class EventCreatePage extends StatefulWidget {
   final MainModel model;
   EventCreatePage(this.model);
@@ -17,7 +32,6 @@ class _EventCreatePageState extends State<EventCreatePage> {
   final Map<String, dynamic> _formData = {
     'title': null,
     'description': null,
-    'location': null,
   };
 
   Widget _buildPageContent({BuildContext context, Event event}) {
@@ -38,8 +52,9 @@ class _EventCreatePageState extends State<EventCreatePage> {
                 _buildTitleTextField(),
                 _buildDescriptionTextField(),
                 SizedBox(height: 10.0),
-                _buildLocationTextField(),
+                // _buildLocationTextField(),
                 // LocationInput(_setLocation, elf),
+                showLocationResults ? CustomSearchScaffold() : TextFormField(initialValue: location),
                 SizedBox(height: 10.0),
                 _buildSubmitButton(),
               ],
@@ -49,6 +64,7 @@ class _EventCreatePageState extends State<EventCreatePage> {
       ),
     );
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -122,14 +138,20 @@ class _EventCreatePageState extends State<EventCreatePage> {
 
   void _submitForm(Function addEvent) {
     //if the form is not valid then exit the function
-    if (!_formKey.currentState.validate()) {
+    if (!_formKey.currentState.validate() ||
+        location == null ||
+        latitude == null ||
+        longitude == null) {
       return;
     }
+
     _formKey.currentState.save();
     addEvent(
       _formData['title'],
       _formData['description'],
-      _formData['location'],
+      latitude,
+      longitude,
+      location,
     ).then(
       (bool success) {
         if (success) {

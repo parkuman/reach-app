@@ -25,6 +25,7 @@ class _HomePageState extends State<HomePage>
   var _currentLocation = <String, double>{};
   var _location = Location();
   LatLng _currentLocationLatLng;
+  Set<Marker> _markers = {};
 
   // controllers for the bottom sliding page and for the scrolling of that page and its contents
   RubberAnimationController _rubberAnimationController;
@@ -43,8 +44,11 @@ class _HomePageState extends State<HomePage>
 
     // wait 3 seconds to enable to "autohide" feature of scrolling on the map. This makes the bottom sheet appear half way up when the app starts
     Future.delayed(Duration(seconds: 3), () {
+      //set all the map markers
+      _setMapMarkers();
       collapseBottomSheet = true;
     });
+
     super.initState();
   }
 
@@ -62,6 +66,23 @@ class _HomePageState extends State<HomePage>
     } catch (e) {
       _currentLocation = null;
     }
+  }
+
+  void _setMapMarkers() {
+    _markers = {};
+    setState(() {
+      for (int i = 0; i < widget.model.allEvents.length; i++) {
+        _markers.add(Marker(
+          markerId: MarkerId(widget.model.allEvents[i].id),
+          position:
+              LatLng(widget.model.allEvents[i].latitude, widget.model.allEvents[i].longitude),
+          infoWindow: InfoWindow(
+            title: widget.model.allEvents[i].title,
+            snippet: widget.model.allEvents[i].location,
+          ),
+        ));
+      }
+    });
   }
 
   Future<void> _moveCamera(
@@ -124,6 +145,7 @@ class _HomePageState extends State<HomePage>
       children: <Widget>[
         GoogleMap(
           onMapCreated: _onMapCreated,
+          markers: _markers,
           onCameraMoveStarted: () {
             if (collapseBottomSheet) {
               _collapseBottomSheet();
@@ -143,6 +165,15 @@ class _HomePageState extends State<HomePage>
             child: Icon(Icons.location_searching),
             onPressed: () =>
                 _moveCamera(latLng: _currentLocationLatLng, tilt: 30, zoom: 17),
+          ),
+        ),
+        Positioned(
+          bottom: 45.0,
+          left: 15.0,
+          child: FloatingActionButton(
+            backgroundColor: Theme.of(context).accentColor,
+            child: Icon(Icons.refresh),
+            onPressed: _setMapMarkers,
           ),
         ),
       ],
@@ -204,7 +235,8 @@ class _HomePageState extends State<HomePage>
                       radius: 30.0,
                     ),
                     title: Text(model.allEvents[index].title),
-                    subtitle: Text('Description: ${model.allEvents[index].description}'),
+                    subtitle: Text(
+                        'Description: ${model.allEvents[index].description}'),
                     trailing: IconButton(
                       icon: Icon(Icons.arrow_right),
                       onPressed: () {},

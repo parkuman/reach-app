@@ -24,6 +24,12 @@ class _DefaultPageState extends State<DefaultPage> {
     TabItem.profile: GlobalKey<NavigatorState>(),
   };
 
+  @override
+  void initState() {
+    widget.model.fetchEvents();
+    super.initState();
+  }
+
   void _selectTab(int index) {
     TabItem tabItem;
     switch (index) {
