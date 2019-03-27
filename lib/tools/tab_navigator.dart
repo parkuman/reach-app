@@ -10,11 +10,13 @@ import '../pages/home.dart';
 import '../pages/profile.dart';
 import '../pages/settings.dart';
 import '../pages/event_create.dart';
+import '../pages/event_details.dart';
 
 class TabNavigatorRoutes {
   static const String root = '/';
   static const String settings = '/settings';
   static const String createEvent = '/createEvent';
+  static const String eventDetails = '/eventDetails';
 }
 
 class TabNavigator extends StatelessWidget {
@@ -23,7 +25,6 @@ class TabNavigator extends StatelessWidget {
   final TabItem tabItem;
   final MainModel model;
 
-  // FOR PUSHING CERTAIN THINGSS
   void _settings(BuildContext context) {
     var routeBuilders = _routeBuilders(context);
     Navigator.push(
@@ -35,7 +36,6 @@ class TabNavigator extends StatelessWidget {
     );
   }
 
-  // FOR PUSHING CERTAIN THINGSS
   void _createEvent(BuildContext context) {
     var routeBuilders = _routeBuilders(context);
     Navigator.push(
@@ -47,7 +47,23 @@ class TabNavigator extends StatelessWidget {
     );
   }
 
-  Map<String, WidgetBuilder> _routeBuilders(BuildContext context) {
+  void _eventDetails(BuildContext context, {int index}) {
+    print('In _eventDetails with index: $index');
+    var routeBuilders = _routeBuilders(context, index: index);
+    // Navigator.pushNamed(
+    //   context,
+    //   TabNavigatorRoutes.eventDetails + '/event/' + model.allEvents[index].id,
+    // );
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            routeBuilders[TabNavigatorRoutes.eventDetails](context),
+      ),
+    );
+  }
+
+  Map<String, WidgetBuilder> _routeBuilders(BuildContext context, {int index}) {
     return {
       TabNavigatorRoutes.root: (context) {
         if (tabItem == TabItem.events) {
@@ -56,7 +72,14 @@ class TabNavigator extends StatelessWidget {
             model: model,
           );
         } else if (tabItem == TabItem.home) {
-          return HomePage(model);
+          return HomePage(
+            onDetailsButton: (int index) {
+              print(
+                  'In Tab_Navigator -> onDetailsButton activated, now running _eventDetails(context, $index)');
+              _eventDetails(context, index: index);
+            },
+            model: model,
+          );
         } else if (tabItem == TabItem.profile) {
           return ProfilePage(
             onSettingsButton: () => _settings(context),
@@ -69,6 +92,8 @@ class TabNavigator extends StatelessWidget {
       TabNavigatorRoutes.settings: (context) => SettingsPage(model),
       //for the create event page on the events screen
       TabNavigatorRoutes.createEvent: (context) => EventCreatePage(model),
+      //for the eventDetails page on home & event screen
+      TabNavigatorRoutes.eventDetails: (context) => EventDetailsPage(model, eventIndex: index),
     };
   }
 

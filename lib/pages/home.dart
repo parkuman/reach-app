@@ -10,7 +10,8 @@ import '../scoped_models/main_model.dart';
 
 class HomePage extends StatefulWidget {
   final MainModel model;
-  HomePage(this.model);
+  final Function onDetailsButton;
+  HomePage({this.model, this.onDetailsButton});
 
   @override
   State<StatefulWidget> createState() {
@@ -74,8 +75,8 @@ class _HomePageState extends State<HomePage>
       for (int i = 0; i < widget.model.allEvents.length; i++) {
         _markers.add(Marker(
           markerId: MarkerId(widget.model.allEvents[i].id),
-          position:
-              LatLng(widget.model.allEvents[i].latitude, widget.model.allEvents[i].longitude),
+          position: LatLng(widget.model.allEvents[i].latitude,
+              widget.model.allEvents[i].longitude),
           infoWindow: InfoWindow(
             title: widget.model.allEvents[i].title,
             snippet: widget.model.allEvents[i].location,
@@ -219,11 +220,8 @@ class _HomePageState extends State<HomePage>
           physics: NeverScrollableScrollPhysics(),
           controller: _scrollController,
           itemBuilder: (BuildContext context, int index) {
-            return Dismissible(
-              key: Key(model.allEvents[index].title),
-              background:
-                  Container(child: Icon(Icons.delete), color: Colors.grey),
-              onDismissed: (DismissDirection direction) {},
+            return GestureDetector(
+              onTap: () => widget.onDetailsButton(index),
               child: Column(
                 children: <Widget>[
                   ListTile(
