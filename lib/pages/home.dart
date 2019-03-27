@@ -75,6 +75,7 @@ class _HomePageState extends State<HomePage>
       for (int i = 0; i < widget.model.allEvents.length; i++) {
         _markers.add(Marker(
           markerId: MarkerId(widget.model.allEvents[i].id),
+          icon: BitmapDescriptor.defaultMarker,
           position: LatLng(widget.model.allEvents[i].latitude,
               widget.model.allEvents[i].longitude),
           infoWindow: InfoWindow(
@@ -142,6 +143,8 @@ class _HomePageState extends State<HomePage>
 
   // THE ENTIRETY OF THE HOME PAGE BENEATH THE SLIDEY MOVING BOTTOM SHEET, this holds a stack with the google map and any of its buttons
   Widget _buildLowerLayer() {
+    _setMapMarkers();
+
     return Stack(
       children: <Widget>[
         GoogleMap(
@@ -166,15 +169,6 @@ class _HomePageState extends State<HomePage>
             child: Icon(Icons.location_searching),
             onPressed: () =>
                 _moveCamera(latLng: _currentLocationLatLng, tilt: 30, zoom: 17),
-          ),
-        ),
-        Positioned(
-          bottom: 45.0,
-          left: 15.0,
-          child: FloatingActionButton(
-            backgroundColor: Theme.of(context).accentColor,
-            child: Icon(Icons.refresh),
-            onPressed: _setMapMarkers,
           ),
         ),
       ],
@@ -236,8 +230,11 @@ class _HomePageState extends State<HomePage>
                     subtitle: Text(
                         'Description: ${model.allEvents[index].description}'),
                     trailing: IconButton(
-                      icon: Icon(Icons.arrow_right),
-                      onPressed: () {},
+                      icon: Icon(Icons.location_on),
+                      onPressed: () {
+                        _moveCamera(latLng: LatLng(model.allEvents[index].latitude, model.allEvents[index].longitude), tilt: 45.0, zoom: 17.0,);
+
+                      },
                     ),
                   ),
                   Divider(),
