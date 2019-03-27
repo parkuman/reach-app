@@ -7,6 +7,7 @@ import 'package:location/location.dart';
 import 'package:rubber/rubber.dart';
 
 import '../scoped_models/main_model.dart';
+import '../widgets/advertisement.dart';
 
 class HomePage extends StatefulWidget {
   final MainModel model;
@@ -122,6 +123,7 @@ class _HomePageState extends State<HomePage>
 
   void _collapseBottomSheet() {
     _rubberAnimationController.collapse();
+    _scrollController.jumpTo(0.0);
   }
 
   void _buildRubberAnimationController() {
@@ -132,7 +134,7 @@ class _HomePageState extends State<HomePage>
             0.3, // to make the bottom sheet load up at about 30% of the screen height (just like the half bound value)
         halfBoundValue: AnimationControllerValue(percentage: 0.3),
         upperBoundValue: AnimationControllerValue(percentage: 1.0),
-        lowerBoundValue: AnimationControllerValue(percentage: 0.03),
+        lowerBoundValue: AnimationControllerValue(percentage: 0.05),
         springDescription: SpringDescription.withDampingRatio(
           mass: 1,
           stiffness: Stiffness.LOW,
@@ -162,7 +164,7 @@ class _HomePageState extends State<HomePage>
           myLocationEnabled: true,
         ),
         Positioned(
-          bottom: 45.0,
+          bottom: 55.0,
           right: 15.0,
           child: FloatingActionButton(
             backgroundColor: Theme.of(context).accentColor,
@@ -177,68 +179,90 @@ class _HomePageState extends State<HomePage>
 
   // everything that is contained within the sliding bottom sheet (for this app it is a scrollable list of events)
   Widget _buildUpperLayer() {
-    return Container(
-      padding: EdgeInsets.only(top: 3.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(12.0),
-          topRight: Radius.circular(12.0),
-        ),
+    return SingleChildScrollView(
+      physics: NeverScrollableScrollPhysics(),
+      controller: _scrollController,
+      child: Column(
+        children: <Widget>[
+          //TOP BIT WITH LITTLE SCROLL BAR THING
+          Container(
+            padding: EdgeInsets.only(top: 10.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(12.0),
+                topRight: Radius.circular(12.0),
+              ),
+            ),
+            height: 55,
+            width: MediaQuery.of(context).size.width - 10,
+            child: Column(
+              children: <Widget>[
+                Container(
+                  alignment: Alignment.center,
+                  width: 50.0,
+                  height: 8.0,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[400],
+                    borderRadius: BorderRadius.circular(4.0),
+                  ),
+                ),
+                Container(height: 20.0),
+                Text('Nearby Events',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+              ],
+            ),
+          ),
+
+          //LISTVIEW
+          Container(
+            color: Colors.white,
+            width: MediaQuery.of(context).size.width - 10,
+            height: MediaQuery.of(context).size.height - 15.0,
+            child: _buildEventsList(),
+          ),
+        ],
       ),
-      height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width,
-      //LITTLE GREY PILL AT THE TOP, DOES NOT WORK CURRENTLY
-      // child: Column(
-      //   crossAxisAlignment: CrossAxisAlignment.center,
-      //   children: <Widget>[
-      //     Container(
-      //       width: 50.0,
-      //       height: 8.0,
-      //       decoration: BoxDecoration(
-      //         color: Colors.grey,
-      //         borderRadius: BorderRadius.circular(4.0),
-      //       ),
-      //     ),
-      //     _buildEventsList(),
-      //   ],
-      // ),
-      child: _buildEventsList(),
     );
   }
 
   Widget _buildEventsList() {
     return ScopedModelDescendant<MainModel>(
       builder: (BuildContext context, Widget child, MainModel model) {
-        return ListView.builder(
+        return ListView.separated(
           physics: NeverScrollableScrollPhysics(),
-          controller: _scrollController,
+          separatorBuilder: (BuildContext context, int index) {
+            return index % 4 == 0
+                ? Column(
+                    children: <Widget>[Divider(), Advertisement(), Divider()],
+                  )
+                : Divider();
+          },
           itemBuilder: (BuildContext context, int index) {
             return GestureDetector(
               onTap: () => widget.onDetailsButton(index),
-              child: Column(
-                children: <Widget>[
-                  ListTile(
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-                    leading: CircleAvatar(
-                      // backgroundImage: NetworkImage(model.allEvents[index].image),
-                      backgroundImage: AssetImage("assets/event.jpg"),
-                      radius: 30.0,
-                    ),
-                    title: Text(model.allEvents[index].title),
-                    subtitle: Text(
-                        'Description: ${model.allEvents[index].description}'),
-                    trailing: IconButton(
-                      icon: Icon(Icons.location_on),
-                      onPressed: () {
-                        _moveCamera(latLng: LatLng(model.allEvents[index].latitude, model.allEvents[index].longitude), tilt: 45.0, zoom: 17.0,);
-
-                      },
-                    ),
-                  ),
-                  Divider(),
-                ],
+              child: ListTile(
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                leading: CircleAvatar(
+                  // backgroundImage: NetworkImage(model.allEvents[index].image),
+                  backgroundImage: AssetImage("assets/event.jpg"),
+                  radius: 30.0,
+                ),
+                title: Text(model.allEvents[index].title),
+                subtitle:
+                    Text('Description: ${model.allEvents[index].description}'),
+                trailing: IconButton(
+                  icon: Icon(Icons.location_on),
+                  onPressed: () {
+                    _moveCamera(
+                      latLng: LatLng(model.allEvents[index].latitude,
+                          model.allEvents[index].longitude),
+                      tilt: 45.0,
+                      zoom: 17.0,
+                    );
+                  },
+                ),
               ),
             );
           },
