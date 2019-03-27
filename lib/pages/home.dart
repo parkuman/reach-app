@@ -232,11 +232,7 @@ class _HomePageState extends State<HomePage>
         return ListView.separated(
           physics: NeverScrollableScrollPhysics(),
           separatorBuilder: (BuildContext context, int index) {
-            return index % 4 == 0
-                ? Column(
-                    children: <Widget>[Divider(), Advertisement(), Divider()],
-                  )
-                : Divider();
+            return Divider();
           },
           itemBuilder: (BuildContext context, int index) {
             return GestureDetector(

@@ -3,6 +3,7 @@ import 'package:scoped_model/scoped_model.dart';
 
 import '../scoped_models/main_model.dart';
 import '../models/event.dart';
+import '../widgets/advertisement.dart';
 
 class EventsList extends StatelessWidget {
   final MainModel model;
@@ -20,10 +21,13 @@ class EventsList extends StatelessWidget {
   Widget _buildEventsList(List<Event> events) {
     Widget eventItem;
     if (events.length > 0) {
-      eventItem = ListView.builder(
-        itemBuilder: ((BuildContext context, int index) {
+      eventItem = ListView.separated(
+        separatorBuilder: (BuildContext context, int index) {
+          return (index % 5 == 0 && index != 0) ? Advertisement() : Container();
+        },
+        itemBuilder: (BuildContext context, int index) {
           return eventCard(model.displayedEvents[index], index);
-        }),
+        },
         itemCount: events.length,
       );
     } else {
