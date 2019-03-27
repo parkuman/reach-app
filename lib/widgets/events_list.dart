@@ -23,6 +23,7 @@ class EventsList extends StatelessWidget {
     if (events.length > 0) {
       eventItem = ListView.separated(
         separatorBuilder: (BuildContext context, int index) {
+          // EVERY X EVENTS DISPLAY AN AD
           return (index % 5 == 0 && index != 0) ? Advertisement() : Container();
         },
         itemBuilder: (BuildContext context, int index) {
