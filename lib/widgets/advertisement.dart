@@ -5,10 +5,10 @@ class Advertisement extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Card(
-      elevation: 3.0,
+      elevation: 2.0,
       child: Container(
         color: Colors.lightBlue,
-        height: 100.0,
+        height: 250.0,
         child: Center(
           child: Text('ADVERTISEMENT'),
         ),

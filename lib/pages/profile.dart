@@ -27,7 +27,7 @@ class ProfilePage extends StatelessWidget {
               Container(
                 margin: EdgeInsets.only(top: 50.0, bottom: 15.0),
                 child: CircleAvatar(
-                  backgroundImage: AssetImage('assets/parker.jpg'),
+                  backgroundImage: AssetImage('assets/avatar.png'),
                   radius: 75.0,
                 ),
               ),

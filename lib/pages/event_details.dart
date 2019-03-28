@@ -9,7 +9,7 @@ class EventDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('$eventIndex'),),
+      appBar: AppBar(title: Text('${eventIndex+1}'),),
       body: Center(
         child: Text('Event Id: ${model.allEvents[eventIndex].id}'),
       ),

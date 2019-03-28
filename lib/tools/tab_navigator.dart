@@ -69,15 +69,14 @@ class TabNavigator extends StatelessWidget {
         if (tabItem == TabItem.events) {
           return EventsPage(
             onCreateEventButton: () => _createEvent(context),
+            onDetailsButton: (int index) =>
+                _eventDetails(context, index: index),
             model: model,
           );
         } else if (tabItem == TabItem.home) {
           return HomePage(
-            onDetailsButton: (int index) {
-              print(
-                  'In Tab_Navigator -> onDetailsButton activated, now running _eventDetails(context, $index)');
-              _eventDetails(context, index: index);
-            },
+            onDetailsButton: (int index) =>
+                _eventDetails(context, index: index),
             model: model,
           );
         } else if (tabItem == TabItem.profile) {
@@ -93,7 +92,8 @@ class TabNavigator extends StatelessWidget {
       //for the create event page on the events screen
       TabNavigatorRoutes.createEvent: (context) => EventCreatePage(model),
       //for the eventDetails page on home & event screen
-      TabNavigatorRoutes.eventDetails: (context) => EventDetailsPage(model, eventIndex: index),
+      TabNavigatorRoutes.eventDetails: (context) =>
+          EventDetailsPage(model, eventIndex: index),
     };
   }
 
