@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:intl/intl.dart';
 
 import '../scoped_models/main_model.dart';
 import '../models/event.dart';
@@ -34,8 +35,12 @@ class _EventCreatePageState extends State<EventCreatePage> {
     'description': null,
   };
 
+  DateTime _startDateTime = DateTime.now();
+  DateTime _endDateTime = DateTime.now();
+
   Widget _buildPageContent({BuildContext context, Event event}) {
     return Scaffold(
+      floatingActionButton: _buildSubmitButton(),
       appBar: AppBar(
         title: Text('Create an Event'),
       ),
@@ -51,15 +56,19 @@ class _EventCreatePageState extends State<EventCreatePage> {
               children: <Widget>[
                 _buildTitleTextField(),
                 SizedBox(height: 10.0),
-                Divider(),
-                SizedBox(height: 10.0),
                 _buildDescriptionTextField(),
                 SizedBox(height: 10.0),
-                showLocationResults
-                    ? CustomSearchScaffold()
-                    : TextFormField(initialValue: location),
+                Text('Date',
+                    style: TextStyle(color: Colors.grey, fontSize: 16.0)),
+                _buildDateTimeSelector(isStartDate: true),
+                Divider(),
+                _buildDateTimeSelector(isStartDate: false),
+                Divider(color: Colors.black),
                 SizedBox(height: 10.0),
-                _buildSubmitButton(),
+                // showLocationResults
+                //     ? CustomSearchScaffold()
+                //     : TextFormField(initialValue: location),
+                CustomSearchScaffold(),
               ],
             ),
           ),
@@ -81,9 +90,10 @@ class _EventCreatePageState extends State<EventCreatePage> {
     return TextFormField(
       decoration: InputDecoration(
         labelText: 'Title',
-        labelStyle: TextStyle(color: Colors.grey),
+        labelStyle: TextStyle(color: Colors.grey, fontSize: 22.0),
       ),
       initialValue: '',
+      style: TextStyle(fontSize: 22.0),
       validator: (String value) {
         if (value.isEmpty || value.length < 1) {
           return 'Please Enter a Title Over 5 Characters Long';
@@ -114,14 +124,87 @@ class _EventCreatePageState extends State<EventCreatePage> {
     );
   }
 
+  Widget _buildDateTimeSelector({bool isStartDate}) {
+    return Row(
+      children: <Widget>[
+        InkWell(
+          onTap: () {
+            setState(() {
+              _selectDate(isStartDate: isStartDate);
+            });
+          },
+          child: Container(
+            alignment: Alignment.center,
+            padding: EdgeInsets.symmetric(horizontal: 20.0),
+            height: 50.0,
+            child: Text(isStartDate
+                ? DateFormat.EEEE().add_yMMMMd().format(_startDateTime)
+                : DateFormat.EEEE().add_yMMMMd().format(_endDateTime)),
+          ),
+        ),
+        Expanded(
+          child: Container(),
+        ),
+        InkWell(
+          onTap: () {
+            _selectTime(isStartDate: isStartDate);
+          },
+          child: Container(
+            alignment: Alignment.center,
+            padding: EdgeInsets.symmetric(horizontal: 20.0),
+            height: 50.0,
+            child: Text(isStartDate
+                ? DateFormat.jm().format(_startDateTime)
+                : DateFormat.jm().format(_endDateTime)),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future _selectDate({bool isStartDate}) async {
+    DateTime pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2019),
+      lastDate: DateTime(2022),
+    );
+    if (pickedDate != null) {
+      setState(() => (isStartDate)
+          ? _startDateTime = pickedDate
+          : _endDateTime = pickedDate);
+    }
+    print(_startDateTime.toString());
+    print(_endDateTime.toString());
+  }
+
+  Future _selectTime({bool isStartDate}) async {
+    TimeOfDay pickedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+    if (pickedTime != null) {
+      setState(() => (isStartDate)
+          ? _startDateTime = DateTime(_startDateTime.year, _startDateTime.month,
+              _startDateTime.day, pickedTime.hour, pickedTime.minute)
+          : _endDateTime = DateTime(_endDateTime.year, _endDateTime.month,
+              _endDateTime.day, pickedTime.hour, pickedTime.minute));
+    }
+    print(_startDateTime.toString());
+    print(_endDateTime.toString());
+  }
+
   Widget _buildSubmitButton() {
     return ScopedModelDescendant<MainModel>(
       builder: (BuildContext context, Widget child, MainModel model) {
         return model.isLoading
-            ? Center(child: CircularProgressIndicator())
-            : RaisedButton(
-                child: Text('Create'),
-                color: Theme.of(context).accentColor,
+            ? FloatingActionButton(
+                child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white)),
+                onPressed: () {},
+              )
+            : FloatingActionButton(
+                child: Icon(Icons.check),
                 onPressed: () => _submitForm(model.addEvent),
               );
       },
