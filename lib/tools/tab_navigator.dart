@@ -48,7 +48,6 @@ class TabNavigator extends StatelessWidget {
   }
 
   void _eventDetails(BuildContext context, {int index}) {
-    print('In _eventDetails with index: $index');
     var routeBuilders = _routeBuilders(context, index: index);
     // Navigator.pushNamed(
     //   context,

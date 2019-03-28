@@ -50,11 +50,14 @@ class _EventCreatePageState extends State<EventCreatePage> {
             child: ListView(
               children: <Widget>[
                 _buildTitleTextField(),
+                SizedBox(height: 10.0),
+                Divider(),
+                SizedBox(height: 10.0),
                 _buildDescriptionTextField(),
                 SizedBox(height: 10.0),
-                // _buildLocationTextField(),
-                // LocationInput(_setLocation, elf),
-                showLocationResults ? CustomSearchScaffold() : TextFormField(initialValue: location),
+                showLocationResults
+                    ? CustomSearchScaffold()
+                    : TextFormField(initialValue: location),
                 SizedBox(height: 10.0),
                 _buildSubmitButton(),
               ],
@@ -64,7 +67,6 @@ class _EventCreatePageState extends State<EventCreatePage> {
       ),
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +79,10 @@ class _EventCreatePageState extends State<EventCreatePage> {
 
   Widget _buildTitleTextField() {
     return TextFormField(
-      decoration: InputDecoration(labelText: 'Title'),
+      decoration: InputDecoration(
+        labelText: 'Title',
+        labelStyle: TextStyle(color: Colors.grey),
+      ),
       initialValue: '',
       validator: (String value) {
         if (value.isEmpty || value.length < 1) {
@@ -93,7 +98,10 @@ class _EventCreatePageState extends State<EventCreatePage> {
   Widget _buildDescriptionTextField() {
     return TextFormField(
       maxLines: 4,
-      decoration: InputDecoration(labelText: 'Description'),
+      decoration: InputDecoration(
+        labelText: 'Description',
+        labelStyle: TextStyle(color: Colors.grey),
+      ),
       initialValue: '',
       validator: (String value) {
         if (value.isEmpty || value.length < 1) {
@@ -102,22 +110,6 @@ class _EventCreatePageState extends State<EventCreatePage> {
       },
       onSaved: (String value) {
         _formData['description'] = value;
-      },
-    );
-  }
-
-  Widget _buildLocationTextField() {
-    return TextFormField(
-      maxLines: 4,
-      decoration: InputDecoration(labelText: 'Location'),
-      initialValue: '',
-      validator: (String value) {
-        if (value.isEmpty) {
-          return 'Please Enter a Location';
-        }
-      },
-      onSaved: (String value) {
-        _formData['location'] = value;
       },
     );
   }
