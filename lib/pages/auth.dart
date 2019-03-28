@@ -102,7 +102,31 @@ class _AuthPageState extends State<AuthPage> {
           _formData['accept'] = value;
         });
       },
-      title: Text('I Agree'),
+      title: Row(
+        children: <Widget>[
+          IconButton(
+            icon: Icon(Icons.info, color: Colors.black54),
+            onPressed: () => showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      content: Text('HERE ARE THE TERMS'),
+                      actions: <Widget>[
+                        FlatButton(
+                          child: Text('Ok'),
+                          onPressed: () => Navigator.pop(context),
+                        )
+                      ],
+                    );
+                  },
+                ),
+          ),
+          Text(
+            'I Agree to the Terms & Conditions',
+            style: TextStyle(fontSize: 12.0),
+          )
+        ],
+      ),
     );
   }
 
@@ -131,9 +155,13 @@ class _AuthPageState extends State<AuthPage> {
   void _submitForm(Function authenticate) async {
     Map<String, dynamic> response;
 
-    if (!_formKey.currentState.validate() || !_formData['accept']) {
+    if (!_formKey.currentState.validate()) {
       return;
     }
+    if (_authMode == AuthMode.Signup && !_formData['accept']) {
+      return;
+    }
+
     _formKey.currentState.save();
 
     response = await authenticate(
@@ -204,7 +232,9 @@ class _AuthPageState extends State<AuthPage> {
                   (_authMode == AuthMode.Signup)
                       ? _buildPasswordConfirmTextField()
                       : Container(),
-                  _buildSwitchTile(),
+                  (_authMode == AuthMode.Signup)
+                      ? _buildSwitchTile()
+                      : Container(),
                   SizedBox(
                     height: 10.0,
                   ),
