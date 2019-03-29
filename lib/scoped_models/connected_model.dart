@@ -29,8 +29,16 @@ mixin EventModel on ConnectedModel {
   }
 
   // ADD EVENT
-  Future<bool> addEvent(String title, String description, double latitude,
-      double longitude, String location) async {
+  Future<bool> addEvent(
+    String title,
+    String description,
+    double latitude,
+    double longitude,
+    String location,
+    DateTime startDateTime,
+    DateTime endDateTime,
+    int attendeeLimit,
+  ) async {
     _isLoading = true;
     notifyListeners();
 
@@ -40,6 +48,9 @@ mixin EventModel on ConnectedModel {
       'latitude': latitude,
       'longitude': longitude,
       'location': location,
+      'startDateTime': startDateTime.toIso8601String(),
+      'endDateTime': endDateTime.toIso8601String(),
+      'attendeeLimit': attendeeLimit,
       'hostEmail': _authenticatedUser.email,
       'hostID': _authenticatedUser.id,
     };
@@ -50,6 +61,7 @@ mixin EventModel on ConnectedModel {
           body: json.encode(eventData));
 
       final Map<String, dynamic> responseData = json.decode(response.body);
+      print(responseData);
       final Event newEvent = Event(
         id: responseData['name'],
         title: title,
@@ -57,6 +69,9 @@ mixin EventModel on ConnectedModel {
         latitude: latitude,
         longitude: longitude,
         location: location,
+        startDateTime: startDateTime,
+        endDateTime: endDateTime,
+        attendeeLimit: attendeeLimit,
         hostEmail: _authenticatedUser.email,
         hostID: _authenticatedUser.id,
       );
@@ -70,15 +85,22 @@ mixin EventModel on ConnectedModel {
       _isLoading = false;
       notifyListeners();
 
-      print('error with add card http request');
+      print(error);
       return false;
     }
   }
 
   // UPDATE EVENT
   Future<bool> updateEvent(
-      {String title, String description, double latitude,
-      double longitude, String location, String id}) async {
+      {String title,
+      String description,
+      double latitude,
+      double longitude,
+      String location,
+      DateTime startDateTime,
+      DateTime endDateTime,
+      int attendeeLimit,
+      String id}) async {
     _isLoading = true;
     notifyListeners();
 
@@ -94,6 +116,9 @@ mixin EventModel on ConnectedModel {
       'latitude': latitude,
       'longitude': longitude,
       'location': location,
+      'startDateTime': startDateTime.toIso8601String(),
+      'endDateTime': endDateTime.toIso8601String(),
+      'attendeeLimit': attendeeLimit,
       'hostEmail': eventToUpdate.hostEmail,
       'hostID': eventToUpdate.hostID,
     };
@@ -113,6 +138,9 @@ mixin EventModel on ConnectedModel {
         latitude: latitude,
         longitude: longitude,
         location: location,
+        startDateTime: startDateTime,
+        endDateTime: endDateTime,
+        attendeeLimit: attendeeLimit,
         hostEmail: eventToUpdate.hostEmail,
         hostID: eventToUpdate.hostID,
       );
@@ -130,7 +158,7 @@ mixin EventModel on ConnectedModel {
       _isLoading = false;
       notifyListeners();
 
-      print('error with update card http request');
+      print(error);
       return false;
     }
   }
@@ -158,7 +186,7 @@ mixin EventModel on ConnectedModel {
       _isLoading = false;
       notifyListeners();
 
-      print('error with delete card http request');
+      print(error);
       return false;
     }
   }
@@ -187,6 +215,10 @@ mixin EventModel on ConnectedModel {
 
       // go through each fetched event from the gathered data, this will create a list of all the events on the server
       eventListData.forEach((String eventID, dynamic eventData) {
+        // since the json returns an ISO8601 formatted string, we must convert the string back to a DateTime to add it into the events
+        DateTime startDateTime = DateTime.parse(eventData['startDateTime']);
+        DateTime endDateTime = DateTime.parse(eventData['endDateTime']);
+
         //create a new event for each and assign it values from the fetched json data
         final Event event = Event(
           id: eventID,
@@ -195,6 +227,9 @@ mixin EventModel on ConnectedModel {
           latitude: eventData['latitude'],
           longitude: eventData['longitude'],
           location: eventData['location'],
+          startDateTime: startDateTime,
+          endDateTime: endDateTime,
+          attendeeLimit: eventData['attendeeLimit'],
           hostEmail: eventData['hostEmail'],
           hostID: eventData['hostID'],
         );

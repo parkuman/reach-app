@@ -4,6 +4,7 @@ import 'package:scoped_model/scoped_model.dart';
 import '../scoped_models/main_model.dart';
 import '../widgets/advertisement.dart';
 import '../models/event.dart';
+import '../widgets/attendee_bar.dart';
 
 class EventsPage extends StatefulWidget {
   final MainModel model;
@@ -126,7 +127,12 @@ class _EventsPageState extends State<EventsPage> {
                     ),
                     //SPACE BETWEEN PIC AND TEXT
                     Expanded(
-                      child: SizedBox(),
+                      child: event.attendeeLimit == -1
+                          ? SizedBox()
+                          : Column(children: <Widget>[
+                              AttendeeAmountBar(index),
+                              Text('x/${event.attendeeLimit} going', style: TextStyle(fontSize: 12.0),),
+                            ]),
                     ),
                     //PICTURE BOX
                     Container(
@@ -150,6 +156,4 @@ class _EventsPageState extends State<EventsPage> {
       },
     );
   }
-
-  
 }

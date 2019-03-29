@@ -38,6 +38,9 @@ class _EventCreatePageState extends State<EventCreatePage> {
   DateTime _startDateTime = DateTime.now();
   DateTime _endDateTime = DateTime.now();
 
+  double attendeeLimit = 5.0;
+  bool limitAttendees = false;
+
   Widget _buildPageContent({BuildContext context, Event event}) {
     return Scaffold(
       floatingActionButton: _buildSubmitButton(),
@@ -63,6 +66,11 @@ class _EventCreatePageState extends State<EventCreatePage> {
                 _buildDateTimeSelector(isStartDate: true),
                 Divider(),
                 _buildDateTimeSelector(isStartDate: false),
+                Divider(color: Colors.black),
+                SizedBox(height: 10.0),
+                Text('Max Attendees',
+                    style: TextStyle(color: Colors.grey, fontSize: 16.0)),
+                _buildLimitAttendees(),
                 Divider(color: Colors.black),
                 SizedBox(height: 10.0),
                 // showLocationResults
@@ -95,8 +103,8 @@ class _EventCreatePageState extends State<EventCreatePage> {
       initialValue: '',
       style: TextStyle(fontSize: 22.0),
       validator: (String value) {
-        if (value.isEmpty || value.length < 1) {
-          return 'Please Enter a Title Over 5 Characters Long';
+        if (value.isEmpty || value.length <= 3) {
+          return 'Please Enter a Title Over 3 Characters Long';
         }
       },
       onSaved: (String value) {
@@ -194,6 +202,53 @@ class _EventCreatePageState extends State<EventCreatePage> {
     print(_endDateTime.toString());
   }
 
+  Widget _buildLimitAttendees() {
+    return Container(
+      child: Column(
+        children: <Widget>[
+          CheckboxListTile(
+            value: limitAttendees,
+            title: Text('Limit Attendees'),
+            onChanged: (bool value) {
+              setState(() {
+                limitAttendees = value;
+              });
+            },
+          ),
+          limitAttendees
+              ? Container(
+                  height: 50,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        alignment: Alignment.center,
+                        width: 50.0,
+                        child: Text('${attendeeLimit.toInt()}'),
+                      ),
+                      Expanded(
+                        child: Slider(
+                          activeColor: Theme.of(context).accentColor,
+                          inactiveColor: Colors.grey,
+                          value: attendeeLimit,
+                          min: 1,
+                          max: 100,
+                          onChanged: (double value) {
+                            setState(() {
+                              attendeeLimit = value;
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : Container(),
+        ],
+      ),
+    );
+  }
+
   Widget _buildSubmitButton() {
     return ScopedModelDescendant<MainModel>(
       builder: (BuildContext context, Widget child, MainModel model) {
@@ -220,6 +275,7 @@ class _EventCreatePageState extends State<EventCreatePage> {
       return;
     }
 
+
     _formKey.currentState.save();
     addEvent(
       _formData['title'],
@@ -227,6 +283,9 @@ class _EventCreatePageState extends State<EventCreatePage> {
       latitude,
       longitude,
       location,
+      _startDateTime,
+      _endDateTime,
+      limitAttendees ? attendeeLimit.toInt() : -1, // if the user said to not limit attendees, set it to -1 so we can check later
     ).then(
       (bool success) {
         if (success) {
