@@ -9,9 +9,15 @@ class EventDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('${eventIndex+1}'),),
+      appBar: AppBar(
+        title: Text('${eventIndex + 1}'),
+      ),
       body: Center(
-        child: Text('Event Id: ${model.allEvents[eventIndex].id}'),
+        child: RaisedButton(
+          color: Theme.of(context).accentColor,
+          child: Text('REACH'),
+          onPressed: () {},
+        ),
       ),
     );
   }
