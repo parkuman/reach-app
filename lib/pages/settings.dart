@@ -55,7 +55,8 @@ SettingsPage(this.model);
           ),
           ListTile(
             title:
-                Text('Logins', style: TextStyle(fontWeight: FontWeight.bold)),
+                Text('Logins', style: TextStyle(fontWeight: FontWeight.bold),),
+                onTap: () {},
           ),
           ScopedModelDescendant(
             builder: (BuildContext context, Widget child, MainModel model) {
