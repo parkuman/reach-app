@@ -28,7 +28,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                   color: Theme.of(context).accentColor,
                   // if loading display a progrss indicator
                   child: Text(model.allEvents[widget.eventIndex].attendees
-                          .contains(model.authenticatedUser.id)
+                          .contains(model.authenticatedUser.email)
                       ? 'UN-REACH'
                       : 'REACH'),
                   onPressed: () {

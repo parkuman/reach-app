@@ -32,7 +32,7 @@ class ProfilePage extends StatelessWidget {
                 ),
               ),
               Text(
-                '${model.authenticatedUser.name}',
+                '${model.authenticatedUser.email.split('@')[0]}',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 26.0,

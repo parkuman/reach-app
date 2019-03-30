@@ -29,11 +29,11 @@ mixin EventModel on ConnectedModel {
     //CONDITIONALS
     if (showUserAttendingEvents) {
       return List.from(_events.where((Event event) {
-        return event.attendees.contains(_authenticatedUser.id);
+        return event.attendees.contains(_authenticatedUser.email);
       }).toList());
     } else if (showUserHostingEvents) {
       return List.from(_events.where((Event event) {
-        return event.hostID == _authenticatedUser.id;
+        return event.hostEmail == _authenticatedUser.email;
       }).toList());
     }
     return List.from(_events);
@@ -44,16 +44,16 @@ mixin EventModel on ConnectedModel {
     _isLoading = true;
     notifyListeners();
 
-    if (event.attendees.contains(_authenticatedUser.id)) {
+    if (event.attendees.contains(_authenticatedUser.email)) {
       print(
           'user ${_authenticatedUser.email} is already attending event, delteing em now');
 
-      event.attendees.remove(_authenticatedUser.id);
+      event.attendees.remove(_authenticatedUser.email);
     } else {
       print(
           'user ${_authenticatedUser.email} is not attending event, adding em now');
 
-      event.attendees.add(_authenticatedUser.id);
+      event.attendees.add(_authenticatedUser.email);
     }
 
     final Map<String, dynamic> eventData = {

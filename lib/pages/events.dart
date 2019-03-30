@@ -40,18 +40,6 @@ class _EventsPageState extends State<EventsPage> {
           centerTitle: true,
           title: Text('Events', style: TextStyle(fontWeight: FontWeight.bold)),
           bottom: TabBar(
-            onTap: (int tab) {
-              if (tab == 0) {
-                widget.model.showUserAttendingEvents = false;
-                widget.model.showUserHostingEvents = false;
-              } else if (tab == 1) {
-                widget.model.showUserHostingEvents = false;
-                widget.model.showUserAttendingEvents = true;
-              } else if (tab == 2) {
-                widget.model.showUserAttendingEvents = false;
-                widget.model.showUserHostingEvents = true;
-              }
-            },
             tabs: <Widget>[
               Container(
                   padding: EdgeInsets.all(15.0), child: Text('All Events')),
@@ -62,18 +50,28 @@ class _EventsPageState extends State<EventsPage> {
         ),
         body: TabBarView(
           children: <Widget>[
-            _buildEventsList(),
-            _buildEventsList(),
-            _buildEventsList(),
+            _buildEventsList(0),
+            _buildEventsList(1),
+            _buildEventsList(2),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildEventsList() {
+  Widget _buildEventsList(int tab) {
     return ScopedModelDescendant(
       builder: (BuildContext context, Widget child, MainModel model) {
+        if (tab == 0) {
+          model.showUserAttendingEvents = false;
+          model.showUserHostingEvents = false;
+        } else if (tab == 1) {
+          model.showUserHostingEvents = false;
+          model.showUserAttendingEvents = true;
+        } else if (tab == 2) {
+          model.showUserAttendingEvents = false;
+          model.showUserHostingEvents = true;
+        }
         Widget content = Center(child: Text('No Content Found'));
         if (!model.isLoading) {
           if (model.displayedEvents.length > 0) {
@@ -137,7 +135,8 @@ class _EventsPageState extends State<EventsPage> {
                             fontSize: 20.0,
                           ),
                         ),
-                        Text(model.displayedEvents[index].location.split(',')[0]),
+                        Text(model.displayedEvents[index].location
+                            .split(',')[0]),
                         Text(
                             '${DateFormat.EEEE().format(model.displayedEvents[index].startDateTime)}, ${DateFormat.jm().format(model.displayedEvents[index].startDateTime)}'),
                         SizedBox(
@@ -160,8 +159,8 @@ class _EventsPageState extends State<EventsPage> {
                     ),
                     //PICTURE BOX
                     Container(
-                      width: 100.0,
-                      height: 100.0,
+                      width: 70.0,
+                      height: 70.0,
                       decoration: BoxDecoration(
                         shape: BoxShape.rectangle,
                         borderRadius: BorderRadius.circular(5.0),
