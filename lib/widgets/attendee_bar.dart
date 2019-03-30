@@ -23,7 +23,7 @@ class AttendeeAmountBar extends StatelessWidget {
         backgroundColor: Colors.grey[300],
         percent: percent,
         progressColor:
-            percent > 0.7 ? Colors.red : Theme.of(context).accentColor,
+            percent > 0.7 ? Colors.red : percent <= 0.7 && percent > 0.4 ? Colors.orange[300] : Theme.of(context).accentColor,
       );
     });
   }

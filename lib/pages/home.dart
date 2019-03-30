@@ -174,6 +174,19 @@ class _HomePageState extends State<HomePage>
                 _moveCamera(latLng: _currentLocationLatLng, tilt: 30, zoom: 17),
           ),
         ),
+        Positioned(
+          top: 0.0,
+          left: 0.0,
+          right: 0.0,
+          child: SafeArea(
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              child: Advertisement(
+                height: 50.0,
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -251,7 +264,8 @@ class _HomePageState extends State<HomePage>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(model.allEvents[index].location.split(',')[0]),
-                    Text('${DateFormat.EEEE().format(model.allEvents[index].startDateTime)}, ${DateFormat.jm().format(model.allEvents[index].startDateTime)}'),
+                    Text(
+                        '${DateFormat.EEEE().format(model.allEvents[index].startDateTime)}, ${DateFormat.jm().format(model.allEvents[index].startDateTime)}'),
                   ],
                 ),
                 trailing: IconButton(

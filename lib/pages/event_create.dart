@@ -39,7 +39,7 @@ class _EventCreatePageState extends State<EventCreatePage> {
   DateTime _endDateTime = DateTime.now();
 
   double attendeeLimit = 5.0;
-  bool limitAttendees = false;
+  bool limitAttendees = true;
 
   Widget _buildPageContent({BuildContext context, Event event}) {
     return Scaffold(

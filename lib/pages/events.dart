@@ -78,8 +78,8 @@ class _EventsPageState extends State<EventsPage> {
             content = ListView.separated(
               separatorBuilder: (BuildContext context, int index) {
                 // EVERY X EVENTS DISPLAY AN AD
-                return (index % 5 == 0 && index != 0)
-                    ? Advertisement()
+                return (index % 4 == 0 && index != 0)
+                    ? Advertisement(height: 250.0, color: Colors.yellow[200],)
                     : Container();
               },
               itemBuilder: (BuildContext context, int index) {
