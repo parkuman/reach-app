@@ -16,7 +16,7 @@ class Event {
   final int attendeeLimit;
   final String hostEmail;
   final String hostID;
-  final List<User> attendees;
+  final List<String> attendees;
 
   Event({
     @required this.id,
@@ -30,6 +30,6 @@ class Event {
     @required this.attendeeLimit,
     @required this.hostEmail,
     @required this.hostID,
-    this.attendees,
+    @required this.attendees,
   });
 }

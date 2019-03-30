@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:intl/intl.dart';
 
 import '../scoped_models/main_model.dart';
 import '../widgets/advertisement.dart';
@@ -121,8 +122,13 @@ class _EventsPageState extends State<EventsPage> {
                             fontSize: 20.0,
                           ),
                         ),
-                        Text('Description: ${event.description}'),
-                        Text('Host: ${event.hostEmail}'),
+                        Text(model.allEvents[index].location.split(',')[0]),
+                        Text(
+                            '${DateFormat.EEEE().format(model.allEvents[index].startDateTime)}, ${DateFormat.jm().format(model.allEvents[index].startDateTime)}'),
+                        SizedBox(
+                          height: 5.0,
+                        ),
+                        Text('Host: ${event.hostEmail.split('@')[0]}'),
                       ],
                     ),
                     //SPACE BETWEEN PIC AND TEXT
@@ -131,7 +137,10 @@ class _EventsPageState extends State<EventsPage> {
                           ? SizedBox()
                           : Column(children: <Widget>[
                               AttendeeAmountBar(index),
-                              Text('x/${event.attendeeLimit} going', style: TextStyle(fontSize: 12.0),),
+                              Text(
+                                '${event.attendees.length - 1}/${event.attendeeLimit} going',
+                                style: TextStyle(fontSize: 12.0),
+                              ),
                             ]),
                     ),
                     //PICTURE BOX

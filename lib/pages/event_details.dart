@@ -16,7 +16,9 @@ class EventDetailsPage extends StatelessWidget {
         child: RaisedButton(
           color: Theme.of(context).accentColor,
           child: Text('REACH'),
-          onPressed: () {},
+          onPressed: () {
+            model.reachEvent(model.displayedEvents[eventIndex]);
+          },
         ),
       ),
     );

@@ -28,6 +28,79 @@ mixin EventModel on ConnectedModel {
     return List.from(_events);
   }
 
+  //JOIN EVENT
+  Future<bool> reachEvent(Event event) async {
+    _isLoading = true;
+    notifyListeners();
+
+    if (event.attendees.contains(_authenticatedUser.id)) {
+      print(
+          'user ${_authenticatedUser.email} is already attending event, delteing em now');
+
+      event.attendees.remove(_authenticatedUser.id);
+    } else {
+      print(
+          'user ${_authenticatedUser.email} is not attending event, adding em now');
+
+      event.attendees.add(_authenticatedUser.id);
+    }
+
+    final Map<String, dynamic> eventData = {
+      'title': event.title,
+      'description': event.description,
+      'latitude': event.latitude,
+      'longitude': event.longitude,
+      'location': event.location,
+      'startDateTime': event.startDateTime.toIso8601String(),
+      'endDateTime': event.endDateTime.toIso8601String(),
+      'attendeeLimit': event.attendeeLimit,
+      'hostEmail': event.hostEmail,
+      'hostID': event.hostID,
+      'attendees': event.attendees,
+    };
+
+    try {
+      final http.Response response = await http.put(
+          'https://reach-app-1.firebaseio.com/events/${event.id}.json?auth=${_authenticatedUser.token}',
+          body: json.encode(eventData));
+
+      final Map<String, dynamic> responseData = json.decode(response.body);
+
+      final Event updatedEvent = Event(
+        id: event.id,
+        title: event.title,
+        description: event.description,
+        latitude: event.latitude,
+        longitude: event.longitude,
+        location: event.location,
+        startDateTime: event.startDateTime,
+        endDateTime: event.endDateTime,
+        attendeeLimit: event.attendeeLimit,
+        attendees: responseData['attendees'],
+        hostEmail: event.hostEmail,
+        hostID: event.hostID,
+      );
+
+      // find the index in _events where the selected event dwells
+      final int eventToUpdateIndex = _events.indexWhere((Event existingEvent) {
+        return existingEvent.id == event.id;
+      });
+
+      // use the found dwelling index to change the selected event to the new updated one
+      _events[eventToUpdateIndex] = updatedEvent;
+
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    } catch (error) {
+      _isLoading = false;
+      notifyListeners();
+
+      print('reachEvent: $error');
+      return false;
+    }
+  }
+
   // ADD EVENT
   Future<bool> addEvent(
     String title,
@@ -51,6 +124,7 @@ mixin EventModel on ConnectedModel {
       'startDateTime': startDateTime.toIso8601String(),
       'endDateTime': endDateTime.toIso8601String(),
       'attendeeLimit': attendeeLimit,
+      'attendees': ['placeholder attendee so that this thing works'],
       'hostEmail': _authenticatedUser.email,
       'hostID': _authenticatedUser.id,
     };
@@ -72,6 +146,7 @@ mixin EventModel on ConnectedModel {
         startDateTime: startDateTime,
         endDateTime: endDateTime,
         attendeeLimit: attendeeLimit,
+        attendees: ['placeholder attendee so that this thing works'],
         hostEmail: _authenticatedUser.email,
         hostID: _authenticatedUser.id,
       );
@@ -85,7 +160,7 @@ mixin EventModel on ConnectedModel {
       _isLoading = false;
       notifyListeners();
 
-      print(error);
+      print('add event: $error');
       return false;
     }
   }
@@ -170,10 +245,8 @@ mixin EventModel on ConnectedModel {
     final int deletedEventIndex = _events.indexWhere((Event event) {
       return event.id == id;
     });
-    print('before: $_events');
     notifyListeners();
     _events.removeAt(deletedEventIndex);
-    print('after: $_events');
 
     try {
       http.delete(
@@ -199,6 +272,7 @@ mixin EventModel on ConnectedModel {
     try {
       final http.Response response = await http.get(
           'https://reach-app-1.firebaseio.com/events.json?auth=${_authenticatedUser.token}');
+
       _isLoading = false;
       notifyListeners();
       final List<Event> fetchedEventList = [];
@@ -230,6 +304,7 @@ mixin EventModel on ConnectedModel {
           startDateTime: startDateTime,
           endDateTime: endDateTime,
           attendeeLimit: eventData['attendeeLimit'],
+          attendees: eventData['attendees'],
           hostEmail: eventData['hostEmail'],
           hostID: eventData['hostID'],
         );
@@ -247,7 +322,7 @@ mixin EventModel on ConnectedModel {
       _isLoading = false;
       notifyListeners();
 
-      print('error with fetch events http request');
+      print('fetch events: $error');
       return false;
     }
   }
@@ -322,7 +397,6 @@ mixin UserModel on ConnectedModel {
       prefs.setString('userEmail', email);
       prefs.setString('userId', responseData['localId']);
       prefs.setString('expiryTime', expiryTime.toIso8601String());
-      print('prefs set check: ${prefs.getString('userName')}');
     } else if (responseData['error']['message'] == 'EMAIL_NOT_FOUND') {
       message = 'This email was not found';
     } else if (responseData['error']['message'] == 'INVALID_PASSWORD') {
@@ -358,7 +432,6 @@ mixin UserModel on ConnectedModel {
       final String userId = prefs.getString('userId');
       final String userName = prefs.getString('userName');
       final int tokenLifespan = parsedExpiryTime.difference(now).inSeconds;
-      print('auto auth name: $userName');
       _authenticatedUser = User(
         id: userId,
         name: userName,

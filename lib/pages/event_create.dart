@@ -101,9 +101,13 @@ class _EventCreatePageState extends State<EventCreatePage> {
         labelStyle: TextStyle(color: Colors.grey, fontSize: 22.0),
       ),
       initialValue: '',
+      autocorrect: false,
       style: TextStyle(fontSize: 22.0),
       validator: (String value) {
-        if (value.isEmpty || value.length <= 3) {
+        print('TITLE TEXT FIELD VALUE: $value');
+        if (value.isEmpty) {
+          return 'Empty';
+        } else if (value.length <= 3) {
           return 'Please Enter a Title Over 3 Characters Long';
         }
       },
@@ -272,9 +276,9 @@ class _EventCreatePageState extends State<EventCreatePage> {
         location == null ||
         latitude == null ||
         longitude == null) {
+      print('not valid');
       return;
     }
-
 
     _formKey.currentState.save();
     addEvent(
@@ -285,7 +289,9 @@ class _EventCreatePageState extends State<EventCreatePage> {
       location,
       _startDateTime,
       _endDateTime,
-      limitAttendees ? attendeeLimit.toInt() : -1, // if the user said to not limit attendees, set it to -1 so we can check later
+      limitAttendees
+          ? attendeeLimit.toInt()
+          : -1, // if the user said to not limit attendees, set it to -1 so we can check later
     ).then(
       (bool success) {
         if (success) {
