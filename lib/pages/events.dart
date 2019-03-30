@@ -28,7 +28,7 @@ class _EventsPageState extends State<EventsPage> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
@@ -40,7 +40,21 @@ class _EventsPageState extends State<EventsPage> {
           centerTitle: true,
           title: Text('Events', style: TextStyle(fontWeight: FontWeight.bold)),
           bottom: TabBar(
+            onTap: (int tab) {
+              if (tab == 0) {
+                widget.model.showUserAttendingEvents = false;
+                widget.model.showUserHostingEvents = false;
+              } else if (tab == 1) {
+                widget.model.showUserHostingEvents = false;
+                widget.model.showUserAttendingEvents = true;
+              } else if (tab == 2) {
+                widget.model.showUserAttendingEvents = false;
+                widget.model.showUserHostingEvents = true;
+              }
+            },
             tabs: <Widget>[
+              Container(
+                  padding: EdgeInsets.all(15.0), child: Text('All Events')),
               Container(padding: EdgeInsets.all(15.0), child: Text('Going')),
               Container(padding: EdgeInsets.all(15.0), child: Text('Hosting')),
             ],
@@ -49,7 +63,8 @@ class _EventsPageState extends State<EventsPage> {
         body: TabBarView(
           children: <Widget>[
             _buildEventsList(),
-            Center(child: Text('Hosting')),
+            _buildEventsList(),
+            _buildEventsList(),
           ],
         ),
       ),
@@ -122,9 +137,9 @@ class _EventsPageState extends State<EventsPage> {
                             fontSize: 20.0,
                           ),
                         ),
-                        Text(model.allEvents[index].location.split(',')[0]),
+                        Text(model.displayedEvents[index].location.split(',')[0]),
                         Text(
-                            '${DateFormat.EEEE().format(model.allEvents[index].startDateTime)}, ${DateFormat.jm().format(model.allEvents[index].startDateTime)}'),
+                            '${DateFormat.EEEE().format(model.displayedEvents[index].startDateTime)}, ${DateFormat.jm().format(model.displayedEvents[index].startDateTime)}'),
                         SizedBox(
                           height: 5.0,
                         ),

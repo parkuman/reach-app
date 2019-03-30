@@ -15,16 +15,27 @@ mixin ConnectedModel on Model {
   List<Event> _events = [];
   User _authenticatedUser;
   bool _isLoading = false;
-  String _selectedEventID;
 }
 
 mixin EventModel on ConnectedModel {
+  bool showUserAttendingEvents = false;
+  bool showUserHostingEvents = false;
+
   List<Event> get allEvents {
     return List.from(_events);
   }
 
   List<Event> get displayedEvents {
     //CONDITIONALS
+    if (showUserAttendingEvents) {
+      return List.from(_events.where((Event event) {
+        return event.attendees.contains(_authenticatedUser.id);
+      }).toList());
+    } else if (showUserHostingEvents) {
+      return List.from(_events.where((Event event) {
+        return event.hostID == _authenticatedUser.id;
+      }).toList());
+    }
     return List.from(_events);
   }
 
@@ -91,6 +102,7 @@ mixin EventModel on ConnectedModel {
 
       _isLoading = false;
       notifyListeners();
+
       return true;
     } catch (error) {
       _isLoading = false;
@@ -166,77 +178,77 @@ mixin EventModel on ConnectedModel {
   }
 
   // UPDATE EVENT
-  Future<bool> updateEvent(
-      {String title,
-      String description,
-      double latitude,
-      double longitude,
-      String location,
-      DateTime startDateTime,
-      DateTime endDateTime,
-      int attendeeLimit,
-      String id}) async {
-    _isLoading = true;
-    notifyListeners();
+  // Future<bool> updateEvent(
+  //     {String title,
+  //     String description,
+  //     double latitude,
+  //     double longitude,
+  //     String location,
+  //     DateTime startDateTime,
+  //     DateTime endDateTime,
+  //     int attendeeLimit,
+  //     String id}) async {
+  //   _isLoading = true;
+  //   notifyListeners();
 
-    // finds the event we want to update using the id the user passed to the updateEvent method
-    final Event eventToUpdate = _events.firstWhere((Event event) {
-      return event.id == id;
-    });
+  //   // finds the event we want to update using the id the user passed to the updateEvent method
+  //   final Event eventToUpdate = _events.firstWhere((Event event) {
+  //     return event.id == id;
+  //   });
 
-    //the data we want to send to the server with some updated info
-    final Map<String, dynamic> updateData = {
-      'title': title,
-      'description': description,
-      'latitude': latitude,
-      'longitude': longitude,
-      'location': location,
-      'startDateTime': startDateTime.toIso8601String(),
-      'endDateTime': endDateTime.toIso8601String(),
-      'attendeeLimit': attendeeLimit,
-      'hostEmail': eventToUpdate.hostEmail,
-      'hostID': eventToUpdate.hostID,
-    };
+  //   //the data we want to send to the server with some updated info
+  //   final Map<String, dynamic> updateData = {
+  //     'title': title,
+  //     'description': description,
+  //     'latitude': latitude,
+  //     'longitude': longitude,
+  //     'location': location,
+  //     'startDateTime': startDateTime.toIso8601String(),
+  //     'endDateTime': endDateTime.toIso8601String(),
+  //     'attendeeLimit': attendeeLimit,
+  //     'hostEmail': eventToUpdate.hostEmail,
+  //     'hostID': eventToUpdate.hostID,
+  //   };
 
-    try {
-      await http.put(
-          'https://reach-app-1.firebaseio.com/events/${eventToUpdate.id}.json?auth=${_authenticatedUser.token}',
-          body: json.encode(updateData));
+  //   try {
+  //     await http.put(
+  //         'https://reach-app-1.firebaseio.com/events/${eventToUpdate.id}.json?auth=${_authenticatedUser.token}',
+  //         body: json.encode(updateData));
 
-      _isLoading = false;
+  //     _isLoading = false;
 
-      // the updated event, now with an id
-      final Event updatedEvent = Event(
-        id: eventToUpdate.id,
-        title: title,
-        description: description,
-        latitude: latitude,
-        longitude: longitude,
-        location: location,
-        startDateTime: startDateTime,
-        endDateTime: endDateTime,
-        attendeeLimit: attendeeLimit,
-        hostEmail: eventToUpdate.hostEmail,
-        hostID: eventToUpdate.hostID,
-      );
+  //     // the updated event, now with an id
+  //     final Event updatedEvent = Event(
+  //       id: eventToUpdate.id,
+  //       title: title,
+  //       description: description,
+  //       latitude: latitude,
+  //       longitude: longitude,
+  //       location: location,
+  //       startDateTime: startDateTime,
+  //       endDateTime: endDateTime,
+  //       attendeeLimit: attendeeLimit,
+  //       hostEmail: eventToUpdate.hostEmail,
+  //       hostID: eventToUpdate.hostID,
+  //     );
 
-      // find the index in _events where the selected event dwells
-      final int eventToUpdateIndex = _events.indexWhere((Event event) {
-        return event.id == id;
-      });
-      // use the found dwelling index to change the selected event to the new updated one
-      _events[eventToUpdateIndex] = updatedEvent;
+  //     // find the index in _events where the selected event dwells
+  //     final int eventToUpdateIndex = _events.indexWhere((Event event) {
+  //       return event.id == id;
+  //     });
+  //     // use the found dwelling index to change the selected event to the new updated one
+  //     _events[eventToUpdateIndex] = updatedEvent;
 
-      notifyListeners();
-      return true;
-    } catch (error) {
-      _isLoading = false;
-      notifyListeners();
+  //     notifyListeners();
+  //     return true;
+  //   } catch (error) {
+  //     _isLoading = false;
+  //     notifyListeners();
 
-      print(error);
-      return false;
-    }
-  }
+  //     print(error);
+  //     return false;
+  //   }
+  // }
 
   // DELETE EVENT
   Future<bool> deleteEvent({String id}) async {

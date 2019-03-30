@@ -68,14 +68,19 @@ class TabNavigator extends StatelessWidget {
         if (tabItem == TabItem.events) {
           return EventsPage(
             onCreateEventButton: () => _createEvent(context),
-            onDetailsButton: (int index) =>
-                _eventDetails(context, index: index),
+            onDetailsButton: (int index) {
+              _eventDetails(context, index: index);
+            },
             model: model,
           );
         } else if (tabItem == TabItem.home) {
           return HomePage(
-            onDetailsButton: (int index) =>
-                _eventDetails(context, index: index),
+            onDetailsButton: (int index) {
+              // so that the settings the events has 
+              model.showUserAttendingEvents = false;
+              model.showUserHostingEvents = false;
+              _eventDetails(context, index: index);
+            },
             model: model,
           );
         } else if (tabItem == TabItem.profile) {

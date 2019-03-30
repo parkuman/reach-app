@@ -16,7 +16,7 @@ class Event {
   final int attendeeLimit;
   final String hostEmail;
   final String hostID;
-  final List<String> attendees;
+  final List<dynamic> attendees;
 
   Event({
     @required this.id,
