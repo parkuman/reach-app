@@ -7,7 +7,7 @@ import '../scoped_models/main_model.dart';
 class EventDetailsPage extends StatefulWidget {
   final MainModel model;
   final int eventIndex;
-EventDetailsPage(this.model, {this.eventIndex});
+EventDetailsPage(this.model,{this.eventIndex});
 
 @override
   State<StatefulWidget> createState() {
@@ -16,13 +16,30 @@ EventDetailsPage(this.model, {this.eventIndex});
 }
 
 class _EventDetailsPageState extends State<EventDetailsPage> {
+
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${widget.eventIndex + 1}'),
+        title: Text('${widget.model.displayedEvents[widget.eventIndex].title}'),
       ),
-      body: Center(
+      body:ListView( 
+        children: <Widget>[
+      Container(
+                      width: 250.0,
+                      height: 150.0,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.rectangle,
+                        borderRadius: BorderRadius.circular(5.0),
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: AssetImage('${widget.model.displayedEvents[widget.eventIndex].image}'),
+                        ),
+                      ),
+      ),
+      
+      Center(
         child: ScopedModelDescendant(
           builder: (BuildContext context, Widget child, MainModel model) {
             return model.isLoading
@@ -41,7 +58,12 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                   );
           },
         ),
+    
       ),
+      
+      ]
+      
+    ),
     );
   }
 }
