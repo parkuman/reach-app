@@ -39,6 +39,54 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                       ),
       ),
       
+        ListTile(
+           
+             title: Text('Description', style: TextStyle(fontWeight: FontWeight.bold),),
+             subtitle: Text('${widget.model.displayedEvents[widget.eventIndex].description}'),
+            onTap: () {},
+          ),
+          ListTile(
+           
+             title: Text('Location', style: TextStyle(fontWeight: FontWeight.bold),),
+             subtitle: Text('${widget.model.displayedEvents[widget.eventIndex].location}'),
+            onTap: () {},
+          ),ListTile(
+           
+             title: Text('Attendees', style: TextStyle(fontWeight: FontWeight.bold),),
+             subtitle: Text('${widget.model.displayedEvents[widget.eventIndex].attendees}'),
+            onTap: () {},
+          ),ListTile(
+           
+             title: Text('Max Attendees', style: TextStyle(fontWeight: FontWeight.bold),),
+             subtitle: Text('${widget.model.displayedEvents[widget.eventIndex].attendeeLimit}'),
+            onTap: () {},
+          ),ListTile(
+           
+             title: Text('Start Time', style: TextStyle(fontWeight: FontWeight.bold),),
+             subtitle: Text('${widget.model.displayedEvents[widget.eventIndex].startDateTime}'),
+            onTap: () {},
+          ),ListTile(
+           
+             title: Text('End Time', style: TextStyle(fontWeight: FontWeight.bold),),
+             subtitle: Text('${widget.model.displayedEvents[widget.eventIndex].endDateTime}'),
+            onTap: () {},
+          ),ListTile(
+           
+             title: Text('End Time', style: TextStyle(fontWeight: FontWeight.bold),),
+             subtitle: Text('${widget.model.displayedEvents[widget.eventIndex].endDateTime}'),
+            onTap: () {},
+          ),ListTile(
+           
+             title: Text('Hosts ID', style: TextStyle(fontWeight: FontWeight.bold),),
+             subtitle: Text('${widget.model.displayedEvents[widget.eventIndex].hostID}'),
+            onTap: () {},
+          ),ListTile(
+           
+             title: Text('Contact Host', style: TextStyle(fontWeight: FontWeight.bold),),
+             subtitle: Text('${widget.model.displayedEvents[widget.eventIndex].hostEmail}'),
+            onTap: () {},
+          ),
+      
       Center(
         child: ScopedModelDescendant(
           builder: (BuildContext context, Widget child, MainModel model) {
