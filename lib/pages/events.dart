@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:intl/intl.dart';
@@ -77,11 +79,22 @@ class _EventsPageState extends State<EventsPage> {
           if (model.displayedEvents.length > 0) {
             content = ListView.separated(
               separatorBuilder: (BuildContext context, int index) {
+                List<String> ads = [
+                  'assets/clark_ad_2.jpg',
+                  'assets/clark_ad_3.jpg',
+                  'assets/clark_ad_4.jpg',
+                  'assets/clark_ad_5.jpg'
+                ];
+                var random = Random();
+
                 // EVERY X EVENTS DISPLAY AN AD
                 return (index % 4 == 0 && index != 0)
                     ? Advertisement(
-                        height: 250.0,
+                        imagePath: ads[random.nextInt(4)],
+                        height: 240.0,
                         color: Colors.yellow[200],
+                        child: Text('AD',
+                            style: TextStyle(color: Colors.grey[600])),
                       )
                     : Container();
               },
@@ -107,6 +120,14 @@ class _EventsPageState extends State<EventsPage> {
   }
 
   Widget eventCard(Event event, int index) {
+    List<String> eventImages = [
+      'assets/event_pic_1.jpg',
+      'assets/event_pic_2.jpg',
+      'assets/event_pic_3.jpg',
+      'assets/event_pic_4.jpg'
+    ];
+    var random = Random();
+
     return ScopedModelDescendant(
       builder: (BuildContext context, Widget child, MainModel model) {
         return Dismissible(
@@ -118,9 +139,6 @@ class _EventsPageState extends State<EventsPage> {
           },
           child: GestureDetector(
             onTap: () => widget.onDetailsButton(index),
-            onLongPress: () {
-              print('card long pressed');
-            },
             child: Card(
               elevation: 2.0,
               child: Container(
@@ -180,7 +198,7 @@ class _EventsPageState extends State<EventsPage> {
                         borderRadius: BorderRadius.circular(5.0),
                         image: DecorationImage(
                           fit: BoxFit.cover,
-                          image: AssetImage('assets/event.jpg'),
+                          image: AssetImage(eventImages[random.nextInt(4)]),
                         ),
                       ),
                     ),
