@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -179,10 +180,21 @@ class _HomePageState extends State<HomePage>
           left: 0.0,
           right: 0.0,
           child: SafeArea(
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              child: Advertisement(
-                height: 50.0,
+            child: GestureDetector(
+              onTap: () {
+                _moveCamera(
+                  latLng: LatLng(44.2267047, -76.4939002),
+                  zoom: 18.0,
+                  tilt: 45.0,
+                  bearing: -60,
+                );
+              },
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                child: Advertisement(
+                  imagePath: 'assets/clark_ad_1.jpg',
+                  height: 50.0,
+                ),
               ),
             ),
           ),
@@ -256,7 +268,7 @@ class _HomePageState extends State<HomePage>
                     EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
                 leading: CircleAvatar(
                   // backgroundImage: NetworkImage(model.allEvents[index].image),
-                  backgroundImage: AssetImage("assets/event.jpg"),
+                  backgroundImage: AssetImage(model.allEvents[index].image),
                   radius: 30.0,
                 ),
                 title: Text(model.allEvents[index].title),

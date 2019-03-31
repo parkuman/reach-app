@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'dart:async';
+import 'dart:math';
 
 import 'package:scoped_model/scoped_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:rxdart/subjects.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../models/event.dart';
 import '../models/user.dart';
@@ -65,6 +65,7 @@ mixin EventModel on ConnectedModel {
       'startDateTime': event.startDateTime.toIso8601String(),
       'endDateTime': event.endDateTime.toIso8601String(),
       'attendeeLimit': event.attendeeLimit,
+      'image': event.image,
       'hostEmail': event.hostEmail,
       'hostID': event.hostID,
       'attendees': event.attendees,
@@ -88,6 +89,7 @@ mixin EventModel on ConnectedModel {
         endDateTime: event.endDateTime,
         attendeeLimit: event.attendeeLimit,
         attendees: responseData['attendees'],
+        image: event.image,
         hostEmail: event.hostEmail,
         hostID: event.hostID,
       );
@@ -127,6 +129,15 @@ mixin EventModel on ConnectedModel {
     _isLoading = true;
     notifyListeners();
 
+    List<String> eventImages = [
+      'assets/event_pic_1.jpg',
+      'assets/event_pic_2.jpg',
+      'assets/event_pic_3.jpg',
+      'assets/event_pic_4.jpg'
+    ];
+    var random = Random();
+    String imagePath = eventImages[random.nextInt(4)];
+
     final Map<String, dynamic> eventData = {
       'title': title,
       'description': description,
@@ -137,6 +148,7 @@ mixin EventModel on ConnectedModel {
       'endDateTime': endDateTime.toIso8601String(),
       'attendeeLimit': attendeeLimit,
       'attendees': ['placeholder attendee so that this thing works'],
+      'image': imagePath,
       'hostEmail': _authenticatedUser.email,
       'hostID': _authenticatedUser.id,
     };
@@ -159,6 +171,7 @@ mixin EventModel on ConnectedModel {
         endDateTime: endDateTime,
         attendeeLimit: attendeeLimit,
         attendees: ['placeholder attendee so that this thing works'],
+        image: imagePath,
         hostEmail: _authenticatedUser.email,
         hostID: _authenticatedUser.id,
       );
@@ -317,6 +330,7 @@ mixin EventModel on ConnectedModel {
           endDateTime: endDateTime,
           attendeeLimit: eventData['attendeeLimit'],
           attendees: eventData['attendees'],
+          image: eventData['image'],
           hostEmail: eventData['hostEmail'],
           hostID: eventData['hostID'],
         );

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:intl/intl.dart';
@@ -20,6 +22,7 @@ class EventsPage extends StatefulWidget {
 }
 
 class _EventsPageState extends State<EventsPage> {
+  @override
   void initState() {
     widget.model.fetchEvents();
     super.initState();
@@ -77,9 +80,23 @@ class _EventsPageState extends State<EventsPage> {
           if (model.displayedEvents.length > 0) {
             content = ListView.separated(
               separatorBuilder: (BuildContext context, int index) {
+                List<String> ads = [
+                  'assets/clark_ad_2.jpg',
+                  'assets/clark_ad_3.jpg',
+                  'assets/clark_ad_4.jpg',
+                  'assets/clark_ad_5.jpg'
+                ];
+                var random = Random();
+
                 // EVERY X EVENTS DISPLAY AN AD
                 return (index % 4 == 0 && index != 0)
-                    ? Advertisement(height: 250.0, color: Colors.yellow[200],)
+                    ? Advertisement(
+                        imagePath: ads[random.nextInt(4)],
+                        height: 240.0,
+                        color: Colors.yellow[200],
+                        child: Text('AD',
+                            style: TextStyle(color: Colors.grey[600])),
+                      )
                     : Container();
               },
               itemBuilder: (BuildContext context, int index) {
@@ -115,47 +132,67 @@ class _EventsPageState extends State<EventsPage> {
           },
           child: GestureDetector(
             onTap: () => widget.onDetailsButton(index),
-            onLongPress: () {
-              print('card long pressed');
-            },
             child: Card(
               elevation: 2.0,
               child: Container(
                 margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                height: 100.0,
                 child: Row(
                   children: <Widget>[
                     //TEXT
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          '${event.title}',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20.0,
+                    Container(
+                      width: 180.0,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            '${event.title}',
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20.0,
+                            ),
                           ),
-                        ),
-                        Text(model.displayedEvents[index].location
-                            .split(',')[0]),
-                        Text(
-                            '${DateFormat.EEEE().format(model.displayedEvents[index].startDateTime)}, ${DateFormat.jm().format(model.displayedEvents[index].startDateTime)}'),
-                        SizedBox(
-                          height: 5.0,
-                        ),
-                        Text('Host: ${event.hostEmail.split('@')[0]}'),
-                      ],
+                          Text(
+                            model.displayedEvents[index].location.split(',')[0],
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Text(
+                            '${DateFormat.EEEE().format(event.startDateTime)}, ${DateFormat.jm().format(event.startDateTime)}',
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          SizedBox(
+                            height: 25.0,
+                          ),
+                          Text(
+                            'Host: ${event.hostEmail.split('@')[0]}',
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
                     ),
                     //SPACE BETWEEN PIC AND TEXT
                     Expanded(
                       child: event.attendeeLimit == -1
                           ? SizedBox()
-                          : Column(children: <Widget>[
-                              AttendeeAmountBar(index),
-                              Text(
-                                '${event.attendees.length - 1}/${event.attendeeLimit} going',
-                                style: TextStyle(fontSize: 12.0),
-                              ),
-                            ]),
+                          : Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  event.attendees.contains(
+                                          model.authenticatedUser.email)
+                                      ? 'Going'
+                                      : '',
+                                  style: TextStyle(
+                                      color: Colors.green, fontSize: 12.0),
+                                ),
+                                AttendeeAmountBar(index),
+                                Text(
+                                  '${event.attendees.length - 1}/${event.attendeeLimit} going',
+                                  style: TextStyle(fontSize: 12.0),
+                                ),
+                              ],
+                            ),
                     ),
                     //PICTURE BOX
                     Container(
@@ -166,7 +203,7 @@ class _EventsPageState extends State<EventsPage> {
                         borderRadius: BorderRadius.circular(5.0),
                         image: DecorationImage(
                           fit: BoxFit.cover,
-                          image: AssetImage('assets/event.jpg'),
+                          image: AssetImage(event.image),
                         ),
                       ),
                     ),

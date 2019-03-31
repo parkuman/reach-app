@@ -4,7 +4,9 @@ class Advertisement extends StatelessWidget {
   final double height;
   final double width;
   final Color color;
-  Advertisement({this.height, this.width, this.color});
+  final String imagePath;
+  final Widget child;
+  Advertisement({this.height, this.width, this.color, this.imagePath, this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -18,10 +20,10 @@ class Advertisement extends StatelessWidget {
           decoration: BoxDecoration(
             image: DecorationImage(
               fit: BoxFit.cover,
-              image: AssetImage('assets/clark_ad_1.jpg'),
+              image: AssetImage(imagePath),
             ),
           ),
-          // child: Text('ADVERTISEMENT'),
+          child: child,
         ),
       ),
     );
