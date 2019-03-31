@@ -98,7 +98,7 @@ class TabNavigator extends StatelessWidget {
       TabNavigatorRoutes.createEvent: (context) => EventCreatePage(model),
       //for the eventDetails page on home & event screen
       TabNavigatorRoutes.eventDetails: (context) =>
-          EventDetailsPage(model, eventIndex: index),
+          EventDetailsPage(),
     };
   }
 
