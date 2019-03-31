@@ -120,14 +120,6 @@ class _EventsPageState extends State<EventsPage> {
   }
 
   Widget eventCard(Event event, int index) {
-    List<String> eventImages = [
-      'assets/event_pic_1.jpg',
-      'assets/event_pic_2.jpg',
-      'assets/event_pic_3.jpg',
-      'assets/event_pic_4.jpg'
-    ];
-    var random = Random();
-
     return ScopedModelDescendant(
       builder: (BuildContext context, Widget child, MainModel model) {
         return Dismissible(
@@ -164,7 +156,7 @@ class _EventsPageState extends State<EventsPage> {
                             overflow: TextOverflow.ellipsis,
                           ),
                           Text(
-                            '${DateFormat.EEEE().format(model.displayedEvents[index].startDateTime)}, ${DateFormat.jm().format(model.displayedEvents[index].startDateTime)}',
+                            '${DateFormat.EEEE().format(event.startDateTime)}, ${DateFormat.jm().format(event.startDateTime)}',
                             overflow: TextOverflow.ellipsis,
                           ),
                           SizedBox(
@@ -198,7 +190,7 @@ class _EventsPageState extends State<EventsPage> {
                         borderRadius: BorderRadius.circular(5.0),
                         image: DecorationImage(
                           fit: BoxFit.cover,
-                          image: AssetImage(eventImages[random.nextInt(4)]),
+                          image: AssetImage(event.image),
                         ),
                       ),
                     ),

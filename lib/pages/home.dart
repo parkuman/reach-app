@@ -253,14 +253,6 @@ class _HomePageState extends State<HomePage>
   }
 
   Widget _buildEventsList() {
-    List<String> eventImages = [
-      'assets/event_pic_1.jpg',
-      'assets/event_pic_2.jpg',
-      'assets/event_pic_3.jpg',
-      'assets/event_pic_4.jpg'
-    ];
-    var random = Random();
-
     return ScopedModelDescendant<MainModel>(
       builder: (BuildContext context, Widget child, MainModel model) {
         return ListView.separated(
@@ -276,7 +268,7 @@ class _HomePageState extends State<HomePage>
                     EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
                 leading: CircleAvatar(
                   // backgroundImage: NetworkImage(model.allEvents[index].image),
-                  backgroundImage: AssetImage(eventImages[random.nextInt(4)]),
+                  backgroundImage: AssetImage(model.allEvents[index].image),
                   radius: 30.0,
                 ),
                 title: Text(model.allEvents[index].title),

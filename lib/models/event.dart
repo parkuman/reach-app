@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import './user.dart';
-
 
 // EVENT CLASS: this stores all the aspects of what an event has
 class Event {
@@ -14,9 +12,10 @@ class Event {
   final DateTime startDateTime;
   final DateTime endDateTime;
   final int attendeeLimit;
+  final List<dynamic> attendees;
+  final String image;
   final String hostEmail;
   final String hostID;
-  final List<dynamic> attendees;
 
   Event({
     @required this.id,
@@ -28,8 +27,9 @@ class Event {
     @required this.startDateTime,
     @required this.endDateTime,
     @required this.attendeeLimit,
+    @required this.attendees,
+    @required this.image,
     @required this.hostEmail,
     @required this.hostID,
-    @required this.attendees,
   });
 }
