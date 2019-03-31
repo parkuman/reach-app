@@ -11,13 +11,14 @@ import '../pages/profile.dart';
 import '../pages/settings.dart';
 import '../pages/event_create.dart';
 import '../pages/event_details.dart';
-import '../models/event.dart';
+
 
 class TabNavigatorRoutes {
   static const String root = '/';
   static const String settings = '/settings';
   static const String createEvent = '/createEvent';
   static const String eventDetails = '/eventDetails';
+  static const String home = '/home';
 }
 
 class TabNavigator extends StatelessWidget {
@@ -99,6 +100,10 @@ class TabNavigator extends StatelessWidget {
       //for the eventDetails page on home & event screen
       TabNavigatorRoutes.eventDetails: (context) =>
           EventDetailsPage(model, eventIndex: index),
+
+          TabNavigatorRoutes.home: (context) => HomePage()
+
+    
     };
   }
 

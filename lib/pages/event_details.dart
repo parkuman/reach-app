@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-import '../scoped_models/main_model.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+
+import '../scoped_models/main_model.dart';
+import '../pages/home.dart';
 
 class EventDetailsPage extends StatefulWidget {
   final MainModel model;
@@ -48,12 +51,22 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
           ListTile(
            
              title: Text('Location', style: TextStyle(fontWeight: FontWeight.bold),),
-             subtitle: Text('${widget.model.displayedEvents[widget.eventIndex].location}'),
-            onTap: () {},
+             subtitle:  Text('${widget.model.displayedEvents[widget.eventIndex].location}'),
+
+                trailing: 
+           FloatingActionButton(
+            backgroundColor: Theme.of(context).accentColor,
+            
+            //child: Icon(Icons.location_off),
+            onPressed: () {},
+            ),
+               
+            onTap: () {}
+            ,
           ),ListTile(
            
              title: Text('Attendees', style: TextStyle(fontWeight: FontWeight.bold),),
-             subtitle: Text('${widget.model.displayedEvents[widget.eventIndex].attendees}'),
+             subtitle:  Text('${widget.model.displayedEvents[widget.eventIndex].attendees}'),
             onTap: () {},
           ),ListTile(
            
@@ -71,12 +84,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
              subtitle: Text('${widget.model.displayedEvents[widget.eventIndex].endDateTime}'),
             onTap: () {},
           ),ListTile(
-           
-             title: Text('End Time', style: TextStyle(fontWeight: FontWeight.bold),),
-             subtitle: Text('${widget.model.displayedEvents[widget.eventIndex].endDateTime}'),
-            onTap: () {},
-          ),ListTile(
-           
+            
              title: Text('Hosts ID', style: TextStyle(fontWeight: FontWeight.bold),),
              subtitle: Text('${widget.model.displayedEvents[widget.eventIndex].hostID}'),
             onTap: () {},
