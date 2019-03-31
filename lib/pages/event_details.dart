@@ -5,9 +5,14 @@ import '../scoped_models/main_model.dart';
 import '../models/event.dart';
 
 class EventDetailsPage extends StatefulWidget {
-  
+  final MainModel model;
+EventDetailsPage(this.model);
 
-
+@override
+  State<StatefulWidget> createState() {
+    return _EventDetailsPageState();
+  }
+}
 
 class _EventDetailsPageState extends State<EventDetailsPage> {
   @override
@@ -32,5 +37,4 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
       );
     
   }
-}
 }
