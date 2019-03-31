@@ -27,7 +27,7 @@ class _AuthPageState extends State<AuthPage> {
       fit: BoxFit.cover,
       colorFilter:
           ColorFilter.mode(Colors.black.withOpacity(0.2), BlendMode.dstATop),
-      image: AssetImage('assets/event.jpg'),
+      image: AssetImage('assets/event_pic_2.jpg'),
     );
   }
 

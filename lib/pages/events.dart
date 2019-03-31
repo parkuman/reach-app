@@ -22,6 +22,7 @@ class EventsPage extends StatefulWidget {
 }
 
 class _EventsPageState extends State<EventsPage> {
+  @override
   void initState() {
     widget.model.fetchEvents();
     super.initState();
@@ -135,6 +136,7 @@ class _EventsPageState extends State<EventsPage> {
               elevation: 2.0,
               child: Container(
                 margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                height: 100.0,
                 child: Row(
                   children: <Widget>[
                     //TEXT
@@ -160,7 +162,7 @@ class _EventsPageState extends State<EventsPage> {
                             overflow: TextOverflow.ellipsis,
                           ),
                           SizedBox(
-                            height: 5.0,
+                            height: 25.0,
                           ),
                           Text(
                             'Host: ${event.hostEmail.split('@')[0]}',
@@ -173,13 +175,24 @@ class _EventsPageState extends State<EventsPage> {
                     Expanded(
                       child: event.attendeeLimit == -1
                           ? SizedBox()
-                          : Column(children: <Widget>[
-                              AttendeeAmountBar(index),
-                              Text(
-                                '${event.attendees.length - 1}/${event.attendeeLimit} going',
-                                style: TextStyle(fontSize: 12.0),
-                              ),
-                            ]),
+                          : Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  event.attendees.contains(
+                                          model.authenticatedUser.email)
+                                      ? 'Going'
+                                      : '',
+                                  style: TextStyle(
+                                      color: Colors.green, fontSize: 12.0),
+                                ),
+                                AttendeeAmountBar(index),
+                                Text(
+                                  '${event.attendees.length - 1}/${event.attendeeLimit} going',
+                                  style: TextStyle(fontSize: 12.0),
+                                ),
+                              ],
+                            ),
                     ),
                     //PICTURE BOX
                     Container(

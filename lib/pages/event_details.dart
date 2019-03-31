@@ -20,24 +20,26 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
       appBar: AppBar(
         title: Text('${widget.eventIndex + 1}'),
       ),
-      body: Center(child: ScopedModelDescendant(
-        builder: (BuildContext context, Widget child, MainModel model) {
-          return model.isLoading
-              ? CircularProgressIndicator()
-              : RaisedButton(
-                  color: Theme.of(context).accentColor,
-                  // if loading display a progrss indicator
-                  child: Text(model.allEvents[widget.eventIndex].attendees
-                          .contains(model.authenticatedUser.email)
-                      ? 'UN-REACH'
-                      : 'REACH'),
-                  onPressed: () {
-                    widget.model
-                        .reachEvent(model.displayedEvents[widget.eventIndex]);
-                  },
-                );
-        },
-      )),
+      body: Center(
+        child: ScopedModelDescendant(
+          builder: (BuildContext context, Widget child, MainModel model) {
+            return model.isLoading
+                ? CircularProgressIndicator()
+                : RaisedButton(
+                    color: Theme.of(context).accentColor,
+                    // if loading display a progrss indicator
+                    child: Text(model.allEvents[widget.eventIndex].attendees
+                            .contains(model.authenticatedUser.email)
+                        ? 'UN-REACH'
+                        : 'REACH'),
+                    onPressed: () {
+                      widget.model
+                          .reachEvent(model.displayedEvents[widget.eventIndex]);
+                    },
+                  );
+          },
+        ),
+      ),
     );
   }
 }
