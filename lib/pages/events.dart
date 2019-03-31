@@ -79,7 +79,10 @@ class _EventsPageState extends State<EventsPage> {
               separatorBuilder: (BuildContext context, int index) {
                 // EVERY X EVENTS DISPLAY AN AD
                 return (index % 4 == 0 && index != 0)
-                    ? Advertisement(height: 250.0, color: Colors.yellow[200],)
+                    ? Advertisement(
+                        height: 250.0,
+                        color: Colors.yellow[200],
+                      )
                     : Container();
               },
               itemBuilder: (BuildContext context, int index) {
@@ -125,25 +128,36 @@ class _EventsPageState extends State<EventsPage> {
                 child: Row(
                   children: <Widget>[
                     //TEXT
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          '${event.title}',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20.0,
+                    Container(
+                      width: 180.0,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            '${event.title}',
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20.0,
+                            ),
                           ),
-                        ),
-                        Text(model.displayedEvents[index].location
-                            .split(',')[0]),
-                        Text(
-                            '${DateFormat.EEEE().format(model.displayedEvents[index].startDateTime)}, ${DateFormat.jm().format(model.displayedEvents[index].startDateTime)}'),
-                        SizedBox(
-                          height: 5.0,
-                        ),
-                        Text('Host: ${event.hostEmail.split('@')[0]}'),
-                      ],
+                          Text(
+                            model.displayedEvents[index].location.split(',')[0],
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Text(
+                            '${DateFormat.EEEE().format(model.displayedEvents[index].startDateTime)}, ${DateFormat.jm().format(model.displayedEvents[index].startDateTime)}',
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          SizedBox(
+                            height: 5.0,
+                          ),
+                          Text(
+                            'Host: ${event.hostEmail.split('@')[0]}',
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
                     ),
                     //SPACE BETWEEN PIC AND TEXT
                     Expanded(
