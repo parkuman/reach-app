@@ -12,7 +12,6 @@ import '../pages/settings.dart';
 import '../pages/event_create.dart';
 import '../pages/event_details.dart';
 
-
 class TabNavigatorRoutes {
   static const String root = '/';
   static const String settings = '/settings';
@@ -78,7 +77,7 @@ class TabNavigator extends StatelessWidget {
         } else if (tabItem == TabItem.home) {
           return HomePage(
             onDetailsButton: (int index) {
-              // so that the settings the events has 
+              // so that the settings the events has
               model.showUserAttendingEvents = false;
               model.showUserHostingEvents = false;
               _eventDetails(context, index: index);
@@ -100,10 +99,6 @@ class TabNavigator extends StatelessWidget {
       //for the eventDetails page on home & event screen
       TabNavigatorRoutes.eventDetails: (context) =>
           EventDetailsPage(model, eventIndex: index),
-
-          TabNavigatorRoutes.home: (context) => HomePage()
-
-    
     };
   }
 
