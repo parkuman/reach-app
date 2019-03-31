@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
+
 import '../scoped_models/main_model.dart';
 import '../models/event.dart';
 
-class EventDetailsPage extends StatelessWidget {
-  final MainModel model;
- 
-  final int eventIndex;
+class EventDetailsPage extends StatefulWidget {
+  
 
-  EventDetailsPage(this.model, {this.eventIndex});// add name, description, hosting email, location, people invited   '${eventIndex+1}'
 
+
+class _EventDetailsPageState extends State<EventDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('${eventIndex+1}'),),
+      appBar: AppBar(title: Text( 'HI'
+      ),),
       body: 
        // child: Text('Event Id: ${model.allEvents[eventIndex].id}'), 
         Container(
@@ -30,4 +32,5 @@ class EventDetailsPage extends StatelessWidget {
       );
     
   }
+}
 }

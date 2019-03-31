@@ -166,7 +166,7 @@ class _AuthPageState extends State<AuthPage> {
 
     response = await authenticate(
       _formData['name'],
-      _formData['email'],
+      _formData['email'].toLowerCase(),
       _formData['password'],
       _authMode,
     );

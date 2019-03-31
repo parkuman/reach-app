@@ -25,11 +25,6 @@ SettingsPage(this.model);
             onTap: () {},
           ),
           ListTile(
-            title: Text('Username', style: TextStyle(fontWeight: FontWeight.bold),),
-            subtitle: Text('${model.authenticatedUser.id}'),
-            onTap: () {},
-          ),
-          ListTile(
             title: Text('Email', style: TextStyle(fontWeight: FontWeight.bold),),
             subtitle: Text('${model.authenticatedUser.email}'),
             onTap: () {},

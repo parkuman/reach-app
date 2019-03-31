@@ -15,22 +15,115 @@ mixin ConnectedModel on Model {
   List<Event> _events = [];
   User _authenticatedUser;
   bool _isLoading = false;
-  String _selectedEventID;
 }
 
 mixin EventModel on ConnectedModel {
+  bool showUserAttendingEvents = false;
+  bool showUserHostingEvents = false;
+
   List<Event> get allEvents {
     return List.from(_events);
   }
 
   List<Event> get displayedEvents {
     //CONDITIONALS
+    if (showUserAttendingEvents) {
+      return List.from(_events.where((Event event) {
+        return event.attendees.contains(_authenticatedUser.email);
+      }).toList());
+    } else if (showUserHostingEvents) {
+      return List.from(_events.where((Event event) {
+        return event.hostEmail == _authenticatedUser.email;
+      }).toList());
+    }
     return List.from(_events);
   }
 
+  //JOIN EVENT
+  Future<bool> reachEvent(Event event) async {
+    _isLoading = true;
+    notifyListeners();
+
+    if (event.attendees.contains(_authenticatedUser.email)) {
+      print(
+          'user ${_authenticatedUser.email} is already attending event, delteing em now');
+
+      event.attendees.remove(_authenticatedUser.email);
+    } else {
+      print(
+          'user ${_authenticatedUser.email} is not attending event, adding em now');
+
+      event.attendees.add(_authenticatedUser.email);
+    }
+
+    final Map<String, dynamic> eventData = {
+      'title': event.title,
+      'description': event.description,
+      'latitude': event.latitude,
+      'longitude': event.longitude,
+      'location': event.location,
+      'startDateTime': event.startDateTime.toIso8601String(),
+      'endDateTime': event.endDateTime.toIso8601String(),
+      'attendeeLimit': event.attendeeLimit,
+      'hostEmail': event.hostEmail,
+      'hostID': event.hostID,
+      'attendees': event.attendees,
+    };
+
+    try {
+      final http.Response response = await http.put(
+          'https://reach-app-1.firebaseio.com/events/${event.id}.json?auth=${_authenticatedUser.token}',
+          body: json.encode(eventData));
+
+      final Map<String, dynamic> responseData = json.decode(response.body);
+
+      final Event updatedEvent = Event(
+        id: event.id,
+        title: event.title,
+        description: event.description,
+        latitude: event.latitude,
+        longitude: event.longitude,
+        location: event.location,
+        startDateTime: event.startDateTime,
+        endDateTime: event.endDateTime,
+        attendeeLimit: event.attendeeLimit,
+        attendees: responseData['attendees'],
+        hostEmail: event.hostEmail,
+        hostID: event.hostID,
+      );
+
+      // find the index in _events where the selected event dwells
+      final int eventToUpdateIndex = _events.indexWhere((Event existingEvent) {
+        return existingEvent.id == event.id;
+      });
+
+      // use the found dwelling index to change the selected event to the new updated one
+      _events[eventToUpdateIndex] = updatedEvent;
+
+      _isLoading = false;
+      notifyListeners();
+
+      return true;
+    } catch (error) {
+      _isLoading = false;
+      notifyListeners();
+
+      print('reachEvent: $error');
+      return false;
+    }
+  }
+
   // ADD EVENT
-  Future<bool> addEvent(String title, String description, double latitude,
-      double longitude, String location) async {
+  Future<bool> addEvent(
+    String title,
+    String description,
+    double latitude,
+    double longitude,
+    String location,
+    DateTime startDateTime,
+    DateTime endDateTime,
+    int attendeeLimit,
+  ) async {
     _isLoading = true;
     notifyListeners();
 
@@ -40,6 +133,10 @@ mixin EventModel on ConnectedModel {
       'latitude': latitude,
       'longitude': longitude,
       'location': location,
+      'startDateTime': startDateTime.toIso8601String(),
+      'endDateTime': endDateTime.toIso8601String(),
+      'attendeeLimit': attendeeLimit,
+      'attendees': ['placeholder attendee so that this thing works'],
       'hostEmail': _authenticatedUser.email,
       'hostID': _authenticatedUser.id,
     };
@@ -50,6 +147,7 @@ mixin EventModel on ConnectedModel {
           body: json.encode(eventData));
 
       final Map<String, dynamic> responseData = json.decode(response.body);
+      print(responseData);
       final Event newEvent = Event(
         id: responseData['name'],
         title: title,
@@ -57,6 +155,10 @@ mixin EventModel on ConnectedModel {
         latitude: latitude,
         longitude: longitude,
         location: location,
+        startDateTime: startDateTime,
+        endDateTime: endDateTime,
+        attendeeLimit: attendeeLimit,
+        attendees: ['placeholder attendee so that this thing works'],
         hostEmail: _authenticatedUser.email,
         hostID: _authenticatedUser.id,
       );
@@ -70,70 +172,83 @@ mixin EventModel on ConnectedModel {
       _isLoading = false;
       notifyListeners();
 
-      print('error with add card http request');
+      print('add event: $error');
       return false;
     }
   }
 
   // UPDATE EVENT
-  Future<bool> updateEvent(
-      {String title, String description, double latitude,
-      double longitude, String location, String id}) async {
-    _isLoading = true;
-    notifyListeners();
+  // Future<bool> updateEvent(
+  //     {String title,
+  //     String description,
+  //     double latitude,
+  //     double longitude,
+  //     String location,
+  //     DateTime startDateTime,
+  //     DateTime endDateTime,
+  //     int attendeeLimit,
+  //     String id}) async {
+  //   _isLoading = true;
+  //   notifyListeners();
 
-    // finds the event we want to update using the id the user passed to the updateEvent method
-    final Event eventToUpdate = _events.firstWhere((Event event) {
-      return event.id == id;
-    });
+  //   // finds the event we want to update using the id the user passed to the updateEvent method
+  //   final Event eventToUpdate = _events.firstWhere((Event event) {
+  //     return event.id == id;
+  //   });
 
-    //the data we want to send to the server with some updated info
-    final Map<String, dynamic> updateData = {
-      'title': title,
-      'description': description,
-      'latitude': latitude,
-      'longitude': longitude,
-      'location': location,
-      'hostEmail': eventToUpdate.hostEmail,
-      'hostID': eventToUpdate.hostID,
-    };
+  //   //the data we want to send to the server with some updated info
+  //   final Map<String, dynamic> updateData = {
+  //     'title': title,
+  //     'description': description,
+  //     'latitude': latitude,
+  //     'longitude': longitude,
+  //     'location': location,
+  //     'startDateTime': startDateTime.toIso8601String(),
+  //     'endDateTime': endDateTime.toIso8601String(),
+  //     'attendeeLimit': attendeeLimit,
+  //     'hostEmail': eventToUpdate.hostEmail,
+  //     'hostID': eventToUpdate.hostID,
+  //   };
 
-    try {
-      await http.put(
-          'https://reach-app-1.firebaseio.com/events/${eventToUpdate.id}.json?auth=${_authenticatedUser.token}',
-          body: json.encode(updateData));
+  //   try {
+  //     await http.put(
+  //         'https://reach-app-1.firebaseio.com/events/${eventToUpdate.id}.json?auth=${_authenticatedUser.token}',
+  //         body: json.encode(updateData));
 
-      _isLoading = false;
+  //     _isLoading = false;
 
-      // the updated event, now with an id
-      final Event updatedEvent = Event(
-        id: eventToUpdate.id,
-        title: title,
-        description: description,
-        latitude: latitude,
-        longitude: longitude,
-        location: location,
-        hostEmail: eventToUpdate.hostEmail,
-        hostID: eventToUpdate.hostID,
-      );
+  //     // the updated event, now with an id
+  //     final Event updatedEvent = Event(
+  //       id: eventToUpdate.id,
+  //       title: title,
+  //       description: description,
+  //       latitude: latitude,
+  //       longitude: longitude,
+  //       location: location,
+  //       startDateTime: startDateTime,
+  //       endDateTime: endDateTime,
+  //       attendeeLimit: attendeeLimit,
+  //       hostEmail: eventToUpdate.hostEmail,
+  //       hostID: eventToUpdate.hostID,
+  //     );
 
-      // find the index in _events where the selected event dwells
-      final int eventToUpdateIndex = _events.indexWhere((Event event) {
-        return event.id == id;
-      });
-      // use the found dwelling index to change the selected event to the new updated one
-      _events[eventToUpdateIndex] = updatedEvent;
+  //     // find the index in _events where the selected event dwells
+  //     final int eventToUpdateIndex = _events.indexWhere((Event event) {
+  //       return event.id == id;
+  //     });
+  //     // use the found dwelling index to change the selected event to the new updated one
+  //     _events[eventToUpdateIndex] = updatedEvent;
 
-      notifyListeners();
-      return true;
-    } catch (error) {
-      _isLoading = false;
-      notifyListeners();
+  //     notifyListeners();
+  //     return true;
+  //   } catch (error) {
+  //     _isLoading = false;
+  //     notifyListeners();
 
-      print('error with update card http request');
-      return false;
-    }
-  }
+  //     print(error);
+  //     return false;
+  //   }
+  // }
 
   // DELETE EVENT
   Future<bool> deleteEvent({String id}) async {
@@ -142,10 +257,8 @@ mixin EventModel on ConnectedModel {
     final int deletedEventIndex = _events.indexWhere((Event event) {
       return event.id == id;
     });
-    print('before: $_events');
     notifyListeners();
     _events.removeAt(deletedEventIndex);
-    print('after: $_events');
 
     try {
       http.delete(
@@ -158,7 +271,7 @@ mixin EventModel on ConnectedModel {
       _isLoading = false;
       notifyListeners();
 
-      print('error with delete card http request');
+      print(error);
       return false;
     }
   }
@@ -171,6 +284,7 @@ mixin EventModel on ConnectedModel {
     try {
       final http.Response response = await http.get(
           'https://reach-app-1.firebaseio.com/events.json?auth=${_authenticatedUser.token}');
+
       _isLoading = false;
       notifyListeners();
       final List<Event> fetchedEventList = [];
@@ -187,6 +301,10 @@ mixin EventModel on ConnectedModel {
 
       // go through each fetched event from the gathered data, this will create a list of all the events on the server
       eventListData.forEach((String eventID, dynamic eventData) {
+        // since the json returns an ISO8601 formatted string, we must convert the string back to a DateTime to add it into the events
+        DateTime startDateTime = DateTime.parse(eventData['startDateTime']);
+        DateTime endDateTime = DateTime.parse(eventData['endDateTime']);
+
         //create a new event for each and assign it values from the fetched json data
         final Event event = Event(
           id: eventID,
@@ -195,6 +313,10 @@ mixin EventModel on ConnectedModel {
           latitude: eventData['latitude'],
           longitude: eventData['longitude'],
           location: eventData['location'],
+          startDateTime: startDateTime,
+          endDateTime: endDateTime,
+          attendeeLimit: eventData['attendeeLimit'],
+          attendees: eventData['attendees'],
           hostEmail: eventData['hostEmail'],
           hostID: eventData['hostID'],
         );
@@ -212,7 +334,7 @@ mixin EventModel on ConnectedModel {
       _isLoading = false;
       notifyListeners();
 
-      print('error with fetch events http request');
+      print('fetch events: $error');
       return false;
     }
   }
@@ -287,7 +409,6 @@ mixin UserModel on ConnectedModel {
       prefs.setString('userEmail', email);
       prefs.setString('userId', responseData['localId']);
       prefs.setString('expiryTime', expiryTime.toIso8601String());
-      print('prefs set check: ${prefs.getString('userName')}');
     } else if (responseData['error']['message'] == 'EMAIL_NOT_FOUND') {
       message = 'This email was not found';
     } else if (responseData['error']['message'] == 'INVALID_PASSWORD') {
@@ -323,7 +444,6 @@ mixin UserModel on ConnectedModel {
       final String userId = prefs.getString('userId');
       final String userName = prefs.getString('userName');
       final int tokenLifespan = parsedExpiryTime.difference(now).inSeconds;
-      print('auto auth name: $userName');
       _authenticatedUser = User(
         id: userId,
         name: userName,

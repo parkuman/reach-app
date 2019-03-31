@@ -11,9 +11,12 @@ class Event {
   final double latitude;
   final double longitude;
   final String location;
+  final DateTime startDateTime;
+  final DateTime endDateTime;
+  final int attendeeLimit;
   final String hostEmail;
   final String hostID;
-  final List<User> attendees;
+  final List<dynamic> attendees;
 
   Event({
     @required this.id,
@@ -22,8 +25,11 @@ class Event {
     @required this.latitude,
     @required this.longitude,
     @required this.location,
+    @required this.startDateTime,
+    @required this.endDateTime,
+    @required this.attendeeLimit,
     @required this.hostEmail,
     @required this.hostID,
-    this.attendees,
+    @required this.attendees,
   });
 }
