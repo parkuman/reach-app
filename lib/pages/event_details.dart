@@ -54,10 +54,8 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
              subtitle:  Text('${widget.model.displayedEvents[widget.eventIndex].location}'),
 
                 trailing: 
-           FloatingActionButton(
-            backgroundColor: Theme.of(context).accentColor,
-            
-            //child: Icon(Icons.location_off),
+           IconButton(            
+            icon: Icon(Icons.location_on),
             onPressed: () {},
             ),
                
