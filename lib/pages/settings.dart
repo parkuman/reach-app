@@ -22,7 +22,7 @@ class SettingsPage extends StatelessWidget {
               'Name',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            subtitle: Text('${model.authenticatedUser.name}'),
+            subtitle: Text('${model.authenticatedUser.email.split('@')[0]}'),
             onTap: () {},
           ),
           ListTile(
