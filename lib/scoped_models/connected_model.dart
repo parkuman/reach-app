@@ -65,10 +65,10 @@ mixin EventModel on ConnectedModel {
       'startDateTime': event.startDateTime.toIso8601String(),
       'endDateTime': event.endDateTime.toIso8601String(),
       'attendeeLimit': event.attendeeLimit,
+      'attendees': List.from(event.attendees)..add('placeholder attendee so that this thing works'),
       'image': event.image,
       'hostEmail': event.hostEmail,
       'hostID': event.hostID,
-      'attendees': event.attendees,
     };
 
     try {
@@ -88,7 +88,7 @@ mixin EventModel on ConnectedModel {
         startDateTime: event.startDateTime,
         endDateTime: event.endDateTime,
         attendeeLimit: event.attendeeLimit,
-        attendees: responseData['attendees'],
+        attendees: List.from(responseData['attendees'])..remove('placeholder attendee so that this thing works'),
         image: event.image,
         hostEmail: event.hostEmail,
         hostID: event.hostID,
@@ -170,7 +170,7 @@ mixin EventModel on ConnectedModel {
         startDateTime: startDateTime,
         endDateTime: endDateTime,
         attendeeLimit: attendeeLimit,
-        attendees: ['placeholder attendee so that this thing works'],
+        attendees: [],
         image: imagePath,
         hostEmail: _authenticatedUser.email,
         hostID: _authenticatedUser.id,
@@ -329,7 +329,7 @@ mixin EventModel on ConnectedModel {
           startDateTime: startDateTime,
           endDateTime: endDateTime,
           attendeeLimit: eventData['attendeeLimit'],
-          attendees: eventData['attendees'],
+          attendees: List.from(eventData['attendees'])..remove('placeholder attendee so that this thing works'),
           image: eventData['image'],
           hostEmail: eventData['hostEmail'],
           hostID: eventData['hostID'],

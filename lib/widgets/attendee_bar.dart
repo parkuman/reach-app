@@ -12,7 +12,7 @@ class AttendeeAmountBar extends StatelessWidget {
     return ScopedModelDescendant(
         builder: (BuildContext context, Widget child, MainModel model) {
       double attendeeAmount =
-          model.displayedEvents[index].attendees.length.toDouble() - 1;
+          model.displayedEvents[index].attendees.length.toDouble();
       double attendeeLimit = model.displayedEvents[index].attendeeLimit.toDouble();
       double percent = attendeeAmount / attendeeLimit;
 

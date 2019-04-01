@@ -24,7 +24,6 @@ class EventsPage extends StatefulWidget {
 class _EventsPageState extends State<EventsPage> {
   @override
   void initState() {
-    widget.model.fetchEvents();
     super.initState();
   }
 
@@ -188,7 +187,7 @@ class _EventsPageState extends State<EventsPage> {
                                 ),
                                 AttendeeAmountBar(index),
                                 Text(
-                                  '${event.attendees.length - 1}/${event.attendeeLimit} going',
+                                  '${event.attendees.length}/${event.attendeeLimit} going',
                                   style: TextStyle(fontSize: 12.0),
                                 ),
                               ],
