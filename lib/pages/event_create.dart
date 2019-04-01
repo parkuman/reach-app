@@ -30,10 +30,8 @@ class EventCreatePage extends StatefulWidget {
 
 class _EventCreatePageState extends State<EventCreatePage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final Map<String, dynamic> _formData = {
-    'title': null,
-    'description': null,
-  };
+  final _titleTextController = TextEditingController();
+  final _descriptionTextController = TextEditingController();
 
   DateTime _startDateTime = DateTime.now();
   DateTime _endDateTime = DateTime.now();
@@ -95,43 +93,46 @@ class _EventCreatePageState extends State<EventCreatePage> {
   }
 
   Widget _buildTitleTextField() {
+    // this code is because when the user scolls so far down the textfield is no longer visible, and therefore the title is lost. This preserves that.
+    if (_titleTextController.text.trim() == '') {
+      _titleTextController.text = '';
+    } else {
+      _titleTextController.text = _titleTextController.text;
+    }
     return TextFormField(
       decoration: InputDecoration(
         labelText: 'Title',
         labelStyle: TextStyle(color: Colors.grey, fontSize: 22.0),
       ),
-      initialValue: '',
+      controller: _titleTextController,
       autocorrect: false,
       style: TextStyle(fontSize: 22.0),
       validator: (String value) {
-        print('TITLE TEXT FIELD VALUE: $value');
-        if (value.isEmpty) {
-          return 'Empty';
-        } else if (value.length <= 3) {
+        if (value.length <= 3 || value.isEmpty) {
           return 'Please Enter a Title Over 3 Characters Long';
         }
-      },
-      onSaved: (String value) {
-        _formData['title'] = value;
       },
     );
   }
 
   Widget _buildDescriptionTextField() {
+    // this code is because when the user scolls so far down the textfield is no longer visible, and therefore the title is lost. This preserves that.
+    if (_descriptionTextController.text.trim() == '') {
+      _descriptionTextController.text = '';
+    } else {
+      _descriptionTextController.text = _descriptionTextController.text;
+    }
     return TextFormField(
       maxLines: 4,
       decoration: InputDecoration(
         labelText: 'Description',
         labelStyle: TextStyle(color: Colors.grey),
       ),
-      initialValue: '',
+      controller: _descriptionTextController,
       validator: (String value) {
         if (value.isEmpty || value.length < 1) {
-          return 'Please Enter a Description Over 10 Characters Long';
+          return 'Please Enter a Description Over 1 Character Long';
         }
-      },
-      onSaved: (String value) {
-        _formData['description'] = value;
       },
     );
   }
@@ -282,8 +283,8 @@ class _EventCreatePageState extends State<EventCreatePage> {
 
     _formKey.currentState.save();
     addEvent(
-      _formData['title'],
-      _formData['description'],
+      _titleTextController.text,
+      _descriptionTextController.text,
       latitude,
       longitude,
       location,
