@@ -4,7 +4,6 @@ import 'package:scoped_model/scoped_model.dart';
 import '../scoped_models/main_model.dart';
 import '../pages/default_view.dart';
 
-
 class EventDetailsPage extends StatefulWidget {
   final MainModel model;
   final int eventIndex;
@@ -19,6 +18,13 @@ class EventDetailsPage extends StatefulWidget {
 class _EventDetailsPageState extends State<EventDetailsPage> {
   @override
   Widget build(BuildContext context) {
+    // prints the attendee list nicer than [name,name,name]
+    String attendeesList = '';
+    widget.model.displayedEvents[widget.eventIndex].attendees
+        .forEach((attendee) {
+      attendeesList = attendeesList + '$attendee\n';
+    });
+
     return Scaffold(
       appBar: AppBar(
         title: Text('${widget.model.displayedEvents[widget.eventIndex].title}'),
@@ -55,9 +61,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
               '${widget.model.displayedEvents[widget.eventIndex].location}'),
           trailing: IconButton(
             icon: Icon(Icons.location_on),
-            onPressed: () {
-              
-            },
+            onPressed: () {},
           ),
           onTap: () {},
         ),
@@ -66,8 +70,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
             'Attendees',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          subtitle: Text(
-              '${widget.model.displayedEvents[widget.eventIndex].attendees}'),
+          subtitle: Text('$attendeesList'),
           onTap: () {},
         ),
         ListTile(
@@ -75,8 +78,11 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
             'Max Attendees',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          subtitle: Text(
-              '${widget.model.displayedEvents[widget.eventIndex].attendeeLimit}'),
+          subtitle: Text(widget
+                      .model.displayedEvents[widget.eventIndex].attendeeLimit ==
+                  -1
+              ? 'unlimited'
+              : '${widget.model.displayedEvents[widget.eventIndex].attendeeLimit}'),
           onTap: () {},
         ),
         ListTile(
