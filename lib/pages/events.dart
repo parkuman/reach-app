@@ -42,6 +42,15 @@ class _EventsPageState extends State<EventsPage> {
           centerTitle: true,
           title: Text('Events', style: TextStyle(fontWeight: FontWeight.bold)),
           bottom: TabBar(
+            onTap: (int index) {
+              // stupid fix for the error when going from hosting to all events
+              if (index == 0) {
+                Future.delayed(Duration(milliseconds: 500), () {
+                  widget.model.showUserAttendingEvents = false;
+                  widget.model.showUserHostingEvents = false;
+                });
+              }
+            },
             tabs: <Widget>[
               Container(
                   padding: EdgeInsets.all(15.0), child: Text('All Events')),
@@ -88,15 +97,17 @@ class _EventsPageState extends State<EventsPage> {
                 var random = Random();
 
                 // EVERY X EVENTS DISPLAY AN AD
-                return (index % 4 == 0 && index != 0)
-                    ? Advertisement(
-                        imagePath: ads[random.nextInt(4)],
-                        height: 240.0,
-                        color: Colors.yellow[200],
-                        child: Text('AD',
-                            style: TextStyle(color: Colors.grey[600])),
-                      )
-                    : Container();
+                if (index % 4 == 0 && index != 0) {
+                  return Advertisement(
+                    imagePath: ads[random.nextInt(4)],
+                    height: 240.0,
+                    color: Colors.yellow[200],
+                    child:
+                        Text('AD', style: TextStyle(color: Colors.grey[600])),
+                  );
+                } else {
+                  return Container();
+                }
               },
               itemBuilder: (BuildContext context, int index) {
                 return eventCard(model.displayedEvents[index], index);
