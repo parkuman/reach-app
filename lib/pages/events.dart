@@ -42,15 +42,6 @@ class _EventsPageState extends State<EventsPage> {
           centerTitle: true,
           title: Text('Events', style: TextStyle(fontWeight: FontWeight.bold)),
           bottom: TabBar(
-            onTap: (int index) {
-              // stupid fix for the error when going from hosting to all events
-              if (index == 0) {
-                Future.delayed(Duration(milliseconds: 500), () {
-                  widget.model.showUserAttendingEvents = false;
-                  widget.model.showUserHostingEvents = false;
-                });
-              }
-            },
             tabs: <Widget>[
               Container(
                   padding: EdgeInsets.all(15.0), child: Text('All Events')),
