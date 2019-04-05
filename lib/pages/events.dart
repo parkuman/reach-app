@@ -179,14 +179,21 @@ class _EventsPageState extends State<EventsPage> {
                           : Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                Text(
-                                  event.attendees.contains(
-                                          model.authenticatedUser.email)
-                                      ? 'Going'
-                                      : '',
-                                  style: TextStyle(
-                                      color: Colors.green, fontSize: 12.0),
-                                ),
+                                event.attendees.length == event.attendeeLimit
+                                    ? Text(
+                                        'FULL',
+                                        style: TextStyle(
+                                            color: Colors.red, fontSize: 12.0),
+                                      )
+                                    : Text(
+                                        event.attendees.contains(
+                                                model.authenticatedUser.email)
+                                            ? 'Going'
+                                            : '',
+                                        style: TextStyle(
+                                            color: Colors.green,
+                                            fontSize: 12.0),
+                                      ),
                                 AttendeeAmountBar(index),
                                 Text(
                                   '${event.attendees.length}/${event.attendeeLimit} going',

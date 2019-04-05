@@ -261,6 +261,9 @@ class _HomePageState extends State<HomePage>
             return Divider();
           },
           itemBuilder: (BuildContext context, int index) {
+            if(index > 5){
+              return null;
+            }
             return GestureDetector(
               onTap: () => widget.onDetailsButton(index),
               child: ListTile(

@@ -42,8 +42,10 @@ class _EventCreatePageState extends State<EventCreatePage> {
   Widget _buildPageContent({BuildContext context, Event event}) {
     return Scaffold(
       floatingActionButton: _buildSubmitButton(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       appBar: AppBar(
         title: Text('Create an Event'),
+        centerTitle: true,
       ),
       body: GestureDetector(
         onTap: () {
@@ -75,6 +77,7 @@ class _EventCreatePageState extends State<EventCreatePage> {
                 //     ? CustomSearchScaffold()
                 //     : TextFormField(initialValue: location),
                 CustomSearchScaffold(),
+                SizedBox(height: 70.0),
               ],
             ),
           ),
@@ -258,14 +261,30 @@ class _EventCreatePageState extends State<EventCreatePage> {
     return ScopedModelDescendant<MainModel>(
       builder: (BuildContext context, Widget child, MainModel model) {
         return model.isLoading
-            ? FloatingActionButton(
-                child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white)),
-                onPressed: () {},
-              )
-            : FloatingActionButton(
-                child: Icon(Icons.check),
+            ? CircularProgressIndicator()
+            : RaisedButton(
+                child: Container(
+                  width: 150.0,
+                  height: 50.0,
+                  child: Row(
+                    children: <Widget>[
+                      Icon(
+                        Icons.add,
+                        color: Colors.white,
+                      ),
+                      SizedBox(width: 10.0),
+                      Text('CREATE EVENT',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                ),
+                color: Theme.of(context).accentColor,
                 onPressed: () => _submitForm(model.addEvent),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50.0)),
               );
       },
     );
