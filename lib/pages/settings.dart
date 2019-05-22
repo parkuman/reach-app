@@ -38,7 +38,7 @@ class SettingsPage extends StatelessWidget {
               'Birthday',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            subtitle: Text('03/03/2000'),
+            subtitle: Text('03/02/2000'),
             onTap: () {},
           ),
           ListTile(
